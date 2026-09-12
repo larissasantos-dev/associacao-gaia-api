@@ -11,7 +11,7 @@ public class Trabalho {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_trabalho")
-    private Integer idTrabalho;
+    private Long idTrabalho;
 
     @ManyToOne
     @JoinColumn(name = "id_artesao", nullable = false)
@@ -36,7 +36,7 @@ public class Trabalho {
     protected Trabalho() {
     }
 
-    public Integer getIdTrabalho() {
+    public Long getIdTrabalho() {
         return idTrabalho;
     }
 

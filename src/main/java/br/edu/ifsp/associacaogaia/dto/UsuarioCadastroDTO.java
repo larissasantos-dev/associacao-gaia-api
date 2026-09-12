@@ -1,6 +1,7 @@
 package br.edu.ifsp.associacaogaia.dto;
 
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,9 +1,12 @@
 package br.edu.ifsp.associacaogaia.service;
 
+import br.edu.ifsp.associacaogaia.dto.LoginDTO;
+import br.edu.ifsp.associacaogaia.exception.CredenciaisInvalidasException;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.exception.EmailJaCadastradoException;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.repository.UsuarioRepository;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +51,21 @@ public class UsuarioService {
         );
 
         return usuarioRepository.save(usuario);
+    }
+
+    public Usuario realizarLogin(LoginDTO dados){
+        Optional<Usuario> usuarioEncontrado =
+                usuarioRepository.findByEmail(dados.getEmail());
+
+        if(usuarioEncontrado.isEmpty()){
+            throw new CredenciaisInvalidasException("E-mail ou senha inválidos.");
+        }
+
+        Usuario usuario = usuarioEncontrado.get();
+
+        if(!passwordEncoder.matches(dados.getSenha(), usuario.getSenha())){
+            throw new CredenciaisInvalidasException("E-mail ou senha inválidos.");
+        }
+        return usuario;
     }
 }

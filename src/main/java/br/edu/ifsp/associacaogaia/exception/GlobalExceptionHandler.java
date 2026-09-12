@@ -13,4 +13,11 @@ public class GlobalExceptionHandler {
     public String tratarEmailJaCadastrado(EmailJaCadastradoException exception){
         return exception.getMessage();
     }
+
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String tratarCredenciaisInvalidas(CredenciaisInvalidasException exception){
+        return exception.getMessage();
+    }
+
 }

@@ -4,6 +4,7 @@ import br.edu.ifsp.associacaogaia.dto.UsuarioResponseDTO;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.service.UsuarioService;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
+import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,12 @@ public class UsuarioController {
     @PostMapping
     public UsuarioResponseDTO cadastrarUsuario(@Valid @RequestBody UsuarioCadastroDTO dados){
         Usuario usuario = usuarioService.cadastrarUsuario(dados);
+        return new UsuarioResponseDTO(usuario);
+    }
+
+    @PostMapping("/login")
+    public UsuarioResponseDTO realizarLogin(@Valid @RequestBody LoginDTO dados){
+        Usuario usuario = usuarioService.realizarLogin(dados);
         return new UsuarioResponseDTO(usuario);
     }
 }
