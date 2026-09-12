@@ -6,7 +6,7 @@ import br.edu.ifsp.associacaogaia.model.Usuario;
 import java.time.LocalDateTime;
 
 public class UsuarioResponseDTO {
-    private Integer idUsuario;
+    private Long idUsuario;
     private String nome;
     private String email;
     private String telefone;
@@ -22,7 +22,7 @@ public class UsuarioResponseDTO {
         this.tipoUsuario = usuario.getTipoUsuario();
     }
 
-    public Integer getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 

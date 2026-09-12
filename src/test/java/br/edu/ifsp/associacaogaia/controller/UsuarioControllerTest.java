@@ -1,22 +1,29 @@
 package br.edu.ifsp.associacaogaia.controller;
 
+import br.edu.ifsp.associacaogaia.config.SecurityConfig;
+import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
+import br.edu.ifsp.associacaogaia.exception.EmailJaCadastradoException;
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.service.UsuarioService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UsuarioController.class)
+@Import(SecurityConfig.class)
 
 public class UsuarioControllerTest {
 
@@ -37,7 +44,7 @@ public class UsuarioControllerTest {
                 TipoUsuario.ARTESAO
         );
 
-        when(usuarioService.buscarUsuario(1))
+        when(usuarioService.buscarUsuario(1L))
                 .thenReturn(Optional.of(usuario));
 
         mockMvc.perform(get("/api/usuarios/1"))
@@ -51,7 +58,7 @@ public class UsuarioControllerTest {
     @Test
     void deveRetornar404AoBuscarUsuarioInexistente() throws Exception {
 
-        when(usuarioService.buscarUsuario(1))
+        when(usuarioService.buscarUsuario(1L))
                 .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/usuarios/1"))
@@ -89,5 +96,96 @@ public class UsuarioControllerTest {
         mockMvc.perform(
                 get("/api/usuarios/email/naoexiste@gmail.com")
         ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deveCadastrarUsuarioComSucesso() throws Exception{
+
+        Usuario usuario = new Usuario(
+                "Larissa",
+                "larissa@gmail.com",
+                "123456",
+                "11999999999",
+                TipoUsuario.ARTESAO
+        );
+
+        when(usuarioService.cadastrarUsuario(org.mockito.ArgumentMatchers.any(UsuarioCadastroDTO.class)))
+                .thenReturn(usuario);
+
+        mockMvc.perform(
+                post("/api/usuarios")
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                "nome": "Larissa",
+                                "email": "larissa@gmail.com",
+                                "senha": "123456",
+                                "telefone": "11999999999",
+                                "tipoUsuario": "ARTESAO"
+                                }
+                                """)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value("Larissa"))
+                .andExpect(jsonPath("$.email").value("larissa@gmail.com"))
+                .andExpect(jsonPath("$.telefone").value("11999999999"))
+                .andExpect(jsonPath("$.tipoUsuario").value("ARTESAO"))
+                .andExpect(jsonPath("$.senha").doesNotExist());
+    }
+
+    @Test
+    void deveRetornar400QuandoNomeNaoForInformado() throws Exception {
+        mockMvc.perform(
+                post("/api/usuarios")
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                "email": "larissa@gmail.com",
+                                "senha": "123456",
+                                "telefone": "11999999999",
+                                "tipoUsuario": "ARTESAO"
+                                }
+                                """)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void DeveRetornar400QuandoEmailForInvalido() throws Exception{
+        mockMvc.perform(
+                post("/api/usuarios")
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                "nome": "Larissa",
+                                "email": "email-invalido",
+                                "senha": "123456",
+                                "telefone": "11999999999",
+                                "tipoUsuario": "ARTESAO"
+                                }
+                                """)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deveRetornar409QuandoEmailJaEstiverCadastrado() throws Exception{
+        when(usuarioService.cadastrarUsuario(
+                org.mockito.ArgumentMatchers.any(UsuarioCadastroDTO.class)
+        )).thenThrow(new EmailJaCadastradoException("E-mail já cadastrado."));
+
+        mockMvc.perform(
+                post("/api/usuarios")
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                "nome": "Larissa",
+                                "email": "larissa@gmail.com",
+                                "senha": "123456",
+                                "telefone": "11999999999",
+                                "tipoUsuario": "ARTESAO"
+                                }
+                                """)
+        )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$").value("E-mail já cadastrado."));
     }
 }

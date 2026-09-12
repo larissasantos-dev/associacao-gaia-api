@@ -1,11 +1,14 @@
 package br.edu.ifsp.associacaogaia.controller;
 
-import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.dto.UsuarioResponseDTO;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.service.UsuarioService;
+import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -27,7 +30,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> buscarUsuario(@PathVariable Integer id){
+    public ResponseEntity<UsuarioResponseDTO> buscarUsuario(@PathVariable Long id){
         return usuarioService.buscarUsuario(id)
                 .map(UsuarioResponseDTO::new)
                 .map(ResponseEntity::ok)
@@ -43,7 +46,8 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario cadastrarUsuario(@RequestBody UsuarioCadastroDTO dados){
-        return usuarioService.cadastrarUsuario(dados);
+    public UsuarioResponseDTO cadastrarUsuario(@Valid @RequestBody UsuarioCadastroDTO dados){
+        Usuario usuario = usuarioService.cadastrarUsuario(dados);
+        return new UsuarioResponseDTO(usuario);
     }
 }
