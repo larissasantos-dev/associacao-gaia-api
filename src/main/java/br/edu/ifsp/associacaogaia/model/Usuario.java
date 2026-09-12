@@ -12,7 +12,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private Integer idUsuario;
+    private Long idUsuario;
 
     @OneToOne(mappedBy = "usuario")
     private Artesao artesao;
@@ -48,7 +48,7 @@ public class Usuario {
         this.dataCadastro = LocalDateTime.now();
     }
 
-    public Integer getIdUsuario(){
+    public Long getIdUsuario(){
         return idUsuario;
     }
 

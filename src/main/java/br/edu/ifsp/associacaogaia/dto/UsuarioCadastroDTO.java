@@ -2,6 +2,10 @@ package br.edu.ifsp.associacaogaia.dto;
 
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class UsuarioCadastroDTO {
     private String nome;
     private String email;
@@ -12,22 +16,28 @@ public class UsuarioCadastroDTO {
     public UsuarioCadastroDTO(){
     }
 
+    @NotBlank
     public String getNome(){
         return nome;
     }
 
+    @NotBlank
+    @Email
     public String getEmail(){
         return email;
     }
 
+    @NotBlank
     public String getSenha(){
         return senha;
     }
 
+    @NotBlank
     public String getTelefone(){
         return telefone;
     }
 
+    @NotNull
     public TipoUsuario getTipoUsuario(){
         return tipoUsuario;
     }

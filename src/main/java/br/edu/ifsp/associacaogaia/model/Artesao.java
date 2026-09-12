@@ -12,7 +12,7 @@ public class Artesao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_artesao")
-    private Integer idArtesao;
+    private Long idArtesao;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", nullable = false, unique = true)
@@ -63,7 +63,7 @@ public class Artesao {
     protected Artesao() {
     }
 
-    public Integer getIdArtesao() {
+    public Long getIdArtesao() {
         return idArtesao;
     }
 
