@@ -1,11 +1,14 @@
 package br.edu.ifsp.associacaogaia.controller;
 
+import br.edu.ifsp.associacaogaia.dto.LoginResponseDTO;
 import br.edu.ifsp.associacaogaia.dto.UsuarioResponseDTO;
 import br.edu.ifsp.associacaogaia.model.Usuario;
+import br.edu.ifsp.associacaogaia.service.TokenService;
 import br.edu.ifsp.associacaogaia.service.UsuarioService;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -17,9 +20,11 @@ import java.util.List;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
     private final UsuarioService usuarioService;
+    private final TokenService tokenService;
 
-    public UsuarioController(UsuarioService usuarioService){
+    public UsuarioController(UsuarioService usuarioService, TokenService tokenService){
         this.usuarioService = usuarioService;
+        this.tokenService = tokenService;
     }
 
     @GetMapping
@@ -31,6 +36,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or #id == authentication.principal.usuario.idUsuario")
     public ResponseEntity<UsuarioResponseDTO> buscarUsuario(@PathVariable Long id){
         return usuarioService.buscarUsuario(id)
                 .map(UsuarioResponseDTO::new)
@@ -39,6 +45,7 @@ public class UsuarioController {
     }
 
     @GetMapping("email/{email}")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or #email == authentication.principal.usuario.email")
     public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorEmail(@PathVariable String email){
         return usuarioService.buscarUsuarioPorEmail(email)
                 .map(UsuarioResponseDTO::new)
@@ -53,8 +60,9 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public UsuarioResponseDTO realizarLogin(@Valid @RequestBody LoginDTO dados){
+    public LoginResponseDTO realizarLogin(@Valid @RequestBody LoginDTO dados){
         Usuario usuario = usuarioService.realizarLogin(dados);
-        return new UsuarioResponseDTO(usuario);
+        String token = tokenService.gerarToken(usuario);
+        return new LoginResponseDTO(token, new UsuarioResponseDTO(usuario));
     }
 }
