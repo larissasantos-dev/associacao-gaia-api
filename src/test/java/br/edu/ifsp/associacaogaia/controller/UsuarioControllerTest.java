@@ -1,17 +1,18 @@
 package br.edu.ifsp.associacaogaia.controller;
 
-import br.edu.ifsp.associacaogaia.config.SecurityConfig;
 import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.exception.CredenciaisInvalidasException;
 import br.edu.ifsp.associacaogaia.exception.EmailJaCadastradoException;
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
+import br.edu.ifsp.associacaogaia.security.SecurityFilter;
+import br.edu.ifsp.associacaogaia.service.TokenService;
 import br.edu.ifsp.associacaogaia.service.UsuarioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,14 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 @WebMvcTest(UsuarioController.class)
-@Import(SecurityConfig.class)
-
+@AutoConfigureMockMvc(addFilters = false)
 public class UsuarioControllerTest {
 
     @Autowired
@@ -41,6 +40,12 @@ public class UsuarioControllerTest {
 
     @MockitoBean
     private PasswordEncoder passwordEncoder;
+
+    @MockitoBean
+    private TokenService tokenService;
+
+    @MockitoBean
+    private SecurityFilter securityFilter;
 
     @Test
     void deveRetornar200AoBuscarUsuarioExistente() throws Exception {
@@ -199,7 +204,7 @@ public class UsuarioControllerTest {
     }
 
     @Test
-    void deveRealizarLoginComSucesso() throws Exception{
+    void deveRealizarLoginComSucesso() throws Exception {
         Usuario usuario = new Usuario(
                 "Larissa",
                 "larissa@gmail.com",
@@ -212,21 +217,25 @@ public class UsuarioControllerTest {
                 org.mockito.ArgumentMatchers.any(LoginDTO.class)
         )).thenReturn(usuario);
 
+        when(tokenService.gerarToken(usuario))
+                .thenReturn("token-jwt-teste");
+
         mockMvc.perform(
-                post("/api/usuarios/login")
-                        .contentType(APPLICATION_JSON)
-                        .content("""
+                        post("/api/usuarios/login")
+                                .contentType(APPLICATION_JSON)
+                                .content("""
                                 {
-                                "email": "larissa@gmail.com",
-                                "senha": "123456"
+                                    "email": "larissa@gmail.com",
+                                    "senha": "123456"
                                 }
                                 """)
-        )
+                )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nome").value("Larissa"))
-                .andExpect(jsonPath("$.email").value("larissa@gmail.com"))
-                .andExpect(jsonPath("$.tipoUsuario").value("ARTESAO"))
-                .andExpect(jsonPath("$.senha").doesNotExist());
+                .andExpect(jsonPath("$.token").value("token-jwt-teste"))
+                .andExpect(jsonPath("$.usuario.nome").value("Larissa"))
+                .andExpect(jsonPath("$.usuario.email").value("larissa@gmail.com"))
+                .andExpect(jsonPath("$.usuario.tipoUsuario").value("ARTESAO"))
+                .andExpect(jsonPath("$.usuario.senha").doesNotExist());
     }
 
     @Test
