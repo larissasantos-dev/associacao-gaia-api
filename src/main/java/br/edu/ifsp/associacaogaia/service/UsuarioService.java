@@ -4,6 +4,7 @@ import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 import br.edu.ifsp.associacaogaia.exception.CredenciaisInvalidasException;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.exception.EmailJaCadastradoException;
+import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.repository.UsuarioRepository;
 
@@ -37,7 +38,6 @@ public class UsuarioService {
     }
 
     public Usuario cadastrarUsuario(UsuarioCadastroDTO dados) {
-
         if (usuarioRepository.findByEmail(dados.getEmail()).isPresent()) {
             throw new EmailJaCadastradoException("E-mail já cadastrado.");
         }
@@ -47,25 +47,26 @@ public class UsuarioService {
                 dados.getEmail(),
                 passwordEncoder.encode(dados.getSenha()),
                 dados.getTelefone(),
-                dados.getTipoUsuario()
+                TipoUsuario.VISITANTE
         );
 
         return usuarioRepository.save(usuario);
     }
 
-    public Usuario realizarLogin(LoginDTO dados){
+    public Usuario realizarLogin(LoginDTO dados) {
         Optional<Usuario> usuarioEncontrado =
                 usuarioRepository.findByEmail(dados.getEmail());
 
-        if(usuarioEncontrado.isEmpty()){
+        if (usuarioEncontrado.isEmpty()) {
             throw new CredenciaisInvalidasException("E-mail ou senha inválidos.");
         }
 
         Usuario usuario = usuarioEncontrado.get();
 
-        if(!passwordEncoder.matches(dados.getSenha(), usuario.getSenha())){
+        if (!passwordEncoder.matches(dados.getSenha(), usuario.getSenha())) {
             throw new CredenciaisInvalidasException("E-mail ou senha inválidos.");
         }
+
         return usuario;
     }
 }
