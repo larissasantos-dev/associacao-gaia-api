@@ -8,6 +8,8 @@ import br.edu.ifsp.associacaogaia.service.UsuarioService;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +56,7 @@ public class UsuarioController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public UsuarioResponseDTO cadastrarUsuario(@Valid @RequestBody UsuarioCadastroDTO dados){
         Usuario usuario = usuarioService.cadastrarUsuario(dados);
         return new UsuarioResponseDTO(usuario);

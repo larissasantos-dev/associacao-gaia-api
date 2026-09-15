@@ -139,7 +139,7 @@ public class UsuarioControllerTest {
                                 }
                                 """)
         )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nome").value("Larissa"))
                 .andExpect(jsonPath("$.email").value("larissa@gmail.com"))
                 .andExpect(jsonPath("$.telefone").value("11999999999"))
