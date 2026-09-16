@@ -1,6 +1,7 @@
 package br.edu.ifsp.associacaogaia.controller;
 
 import br.edu.ifsp.associacaogaia.dto.LoginResponseDTO;
+import br.edu.ifsp.associacaogaia.dto.UsuarioAtualizacaoDTO;
 import br.edu.ifsp.associacaogaia.dto.UsuarioResponseDTO;
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
@@ -62,6 +63,13 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioResponseDTO cadastrarUsuario(@Valid @RequestBody UsuarioCadastroDTO dados){
         Usuario usuario = usuarioService.cadastrarUsuario(dados);
+        return new UsuarioResponseDTO(usuario);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRADOR') or #id == authentication.principal.usuario.idUsuario")
+    public UsuarioResponseDTO atualizarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioAtualizacaoDTO dados){
+        Usuario usuario = usuarioService.atualizarUsuario(id, dados);
         return new UsuarioResponseDTO(usuario);
     }
 

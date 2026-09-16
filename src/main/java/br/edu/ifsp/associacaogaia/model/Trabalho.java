@@ -33,7 +33,7 @@ public class Trabalho {
     @Column(name = "data_publicacao", nullable = false)
     private LocalDateTime dataPublicacao;
 
-    protected Trabalho() {
+    public Trabalho() {
     }
 
     public Long getIdTrabalho() {

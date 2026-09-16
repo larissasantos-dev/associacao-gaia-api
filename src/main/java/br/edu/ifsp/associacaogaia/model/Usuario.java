@@ -101,6 +101,10 @@ public class Usuario {
         this.telefone = telefone;
     }
 
+    public void setSenha(String senha){
+        this.senha = senha;
+    }
+
     public void setTipoUsuario(TipoUsuario tipoUsuario){
         this.tipoUsuario = tipoUsuario;
     }

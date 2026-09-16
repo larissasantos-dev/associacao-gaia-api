@@ -2,6 +2,7 @@ package br.edu.ifsp.associacaogaia.service;
 
 import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 import br.edu.ifsp.associacaogaia.exception.CredenciaisInvalidasException;
+import br.edu.ifsp.associacaogaia.dto.UsuarioAtualizacaoDTO;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.exception.EmailJaCadastradoException;
 import br.edu.ifsp.associacaogaia.exception.UsuarioInativoException;
@@ -54,6 +55,20 @@ public class UsuarioService {
                 dados.getTelefone(),
                 TipoUsuario.VISITANTE
         );
+
+        return usuarioRepository.save(usuario);
+    }
+
+    public Usuario atualizarUsuario(Long id, UsuarioAtualizacaoDTO dados) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(UsuarioNaoEncontradoException::new);
+
+        usuario.setNome(dados.getNome());
+        usuario.setTelefone(dados.getTelefone());
+
+        if (dados.getSenha() != null && !dados.getSenha().isBlank()) {
+            usuario.setSenha(passwordEncoder.encode(dados.getSenha()));
+        }
 
         return usuarioRepository.save(usuario);
     }

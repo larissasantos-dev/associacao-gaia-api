@@ -26,9 +26,21 @@ public class GlobalExceptionHandler {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(ArtesaoNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String tratarArtesaoNaoEncontrado(ArtesaoNaoEncontradoException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(TrabalhoNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String tratarTrabalhoNaoEncontrado(TrabalhoNaoEncontradoException exception){
+        return exception.getMessage();
+    }
+
     @ExceptionHandler(UsuarioNaoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String tratarUssuarioNaoEncontrado(UsuarioNaoEncontradoException exception){
+    public String tratarUsuarioNaoEncontrado(UsuarioNaoEncontradoException exception){
         return exception.getMessage();
     }
 }
