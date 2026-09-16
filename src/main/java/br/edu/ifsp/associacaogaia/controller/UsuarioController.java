@@ -2,11 +2,13 @@ package br.edu.ifsp.associacaogaia.controller;
 
 import br.edu.ifsp.associacaogaia.dto.LoginResponseDTO;
 import br.edu.ifsp.associacaogaia.dto.UsuarioResponseDTO;
+import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.service.TokenService;
 import br.edu.ifsp.associacaogaia.service.UsuarioService;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.dto.LoginDTO;
+import br.edu.ifsp.associacaogaia.dto.AtualizarStatusDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,8 +32,9 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public List<UsuarioResponseDTO> listarUsuario(){
-        return usuarioService.listarUsuarios()
+    public List<UsuarioResponseDTO> listarUsuario(
+            @RequestParam(required = false)TipoUsuario tipo){
+        return usuarioService.listarUsuarios(tipo)
                 .stream()
                 .map(UsuarioResponseDTO::new)
                 .toList();
@@ -67,5 +70,14 @@ public class UsuarioController {
         Usuario usuario = usuarioService.realizarLogin(dados);
         String token = tokenService.gerarToken(usuario);
         return new LoginResponseDTO(token, new UsuarioResponseDTO(usuario));
+    }
+
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public UsuarioResponseDTO alterarStatusUsuario(
+            @PathVariable Long id,
+            @Valid @RequestBody AtualizarStatusDTO dados){
+        Usuario usuario = usuarioService.alterarStatusUsuario(id, dados.getAtivo());
+        return new UsuarioResponseDTO(usuario);
     }
 }
