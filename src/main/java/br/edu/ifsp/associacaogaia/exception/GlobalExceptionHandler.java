@@ -20,4 +20,15 @@ public class GlobalExceptionHandler {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(UsuarioInativoException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String tratarUsuarioInativo(UsuarioInativoException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String tratarUssuarioNaoEncontrado(UsuarioNaoEncontradoException exception){
+        return exception.getMessage();
+    }
 }

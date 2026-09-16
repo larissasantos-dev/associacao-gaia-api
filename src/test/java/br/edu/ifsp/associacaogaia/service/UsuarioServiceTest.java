@@ -4,6 +4,8 @@ import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.exception.CredenciaisInvalidasException;
 import br.edu.ifsp.associacaogaia.exception.EmailJaCadastradoException;
+import br.edu.ifsp.associacaogaia.exception.UsuarioInativoException;
+import br.edu.ifsp.associacaogaia.exception.UsuarioNaoEncontradoException;
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.repository.UsuarioRepository;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -133,6 +136,86 @@ class UsuarioServiceTest {
 
         assertThrows(CredenciaisInvalidasException.class,
                 () -> usuarioService.realizarLogin(dados));
+    }
+
+    @Test
+    void realizarLogin_comUsuarioInativo_deveLancarExcecao() {
+        LoginDTO dados = new LoginDTO();
+        dados.setEmail("inativo@teste.com");
+        dados.setSenha("123456");
+
+        Usuario usuarioInativo = new Usuario(
+                "Inativo", "inativo@teste.com", "senha-criptografada",
+                "11999999999", TipoUsuario.VISITANTE
+        );
+        usuarioInativo.setAtivo(false);
+
+        when(usuarioRepository.findByEmail(dados.getEmail())).thenReturn(Optional.of(usuarioInativo));
+        when(passwordEncoder.matches(dados.getSenha(), usuarioInativo.getSenha())).thenReturn(true);
+
+        assertThrows(UsuarioInativoException.class,
+                () -> usuarioService.realizarLogin(dados));
+    }
+
+    // ---------- LISTAGEM COM FILTRO ----------
+
+    @Test
+    void listarUsuarios_semFiltro_deveRetornarTodosOsUsuarios() {
+        Usuario visitante = new Usuario(
+                "Visitante", "visitante@teste.com", "senha",
+                "11999999999", TipoUsuario.VISITANTE
+        );
+        Usuario artesao = new Usuario(
+                "Artesao", "artesao@teste.com", "senha",
+                "11988888888", TipoUsuario.ARTESAO
+        );
+
+        when(usuarioRepository.findAll()).thenReturn(List.of(visitante, artesao));
+
+        List<Usuario> resultado = usuarioService.listarUsuarios(null);
+
+        assertEquals(2, resultado.size());
+    }
+
+    @Test
+    void listarUsuarios_comFiltro_deveRetornarApenasDoTipoInformado() {
+        Usuario artesao = new Usuario(
+                "Artesao", "artesao@teste.com", "senha",
+                "11988888888", TipoUsuario.ARTESAO
+        );
+
+        when(usuarioRepository.findByTipoUsuario(TipoUsuario.ARTESAO))
+                .thenReturn(List.of(artesao));
+
+        List<Usuario> resultado = usuarioService.listarUsuarios(TipoUsuario.ARTESAO);
+
+        assertEquals(1, resultado.size());
+        assertEquals(TipoUsuario.ARTESAO, resultado.get(0).getTipoUsuario());
+    }
+
+    // ---------- ATIVAR/DESATIVAR ----------
+
+    @Test
+    void alterarStatusUsuario_deveDesativarUsuario() {
+        Usuario usuario = new Usuario(
+                "Teste", "teste@teste.com", "senha",
+                "11999999999", TipoUsuario.VISITANTE
+        );
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(Usuario.class))).thenAnswer(chamada -> chamada.getArgument(0));
+
+        Usuario resultado = usuarioService.alterarStatusUsuario(1L, false);
+
+        assertFalse(resultado.isAtivo());
+    }
+
+    @Test
+    void alterarStatusUsuario_comIdInexistente_deveLancarExcecao() {
+        when(usuarioRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(UsuarioNaoEncontradoException.class,
+                () -> usuarioService.alterarStatusUsuario(999L, false));
     }
 
     // ---------- helper ----------

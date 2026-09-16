@@ -12,6 +12,7 @@ public class UsuarioResponseDTO {
     private String telefone;
     private LocalDateTime dataCadastro;
     private TipoUsuario tipoUsuario;
+    private boolean ativo;
 
     public UsuarioResponseDTO(Usuario usuario){
         this.idUsuario = usuario.getIdUsuario();
@@ -20,6 +21,7 @@ public class UsuarioResponseDTO {
         this.telefone = usuario.getTelefone();
         this.dataCadastro = usuario.getDataCadastro();
         this.tipoUsuario = usuario.getTipoUsuario();
+        this.ativo = usuario.isAtivo();
     }
 
     public Long getIdUsuario() {
@@ -44,5 +46,9 @@ public class UsuarioResponseDTO {
 
     public TipoUsuario getTipoUsuario() {
         return tipoUsuario;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
     }
 }

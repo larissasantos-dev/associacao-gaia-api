@@ -1,6 +1,7 @@
 package br.edu.ifsp.associacaogaia.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -36,6 +37,10 @@ public class Usuario {
     @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;
 
+    @Column(name = "ativo", nullable = false)
+    @ColumnDefault("true")
+    private boolean ativo = true;
+
     protected Usuario(){
     }
 
@@ -46,6 +51,10 @@ public class Usuario {
         this.telefone = telefone;
         this.tipoUsuario = tipoUsuario;
         this.dataCadastro = LocalDateTime.now();
+    }
+
+    public boolean isAtivo(){
+        return ativo;
     }
 
     public Long getIdUsuario(){
@@ -96,5 +105,7 @@ public class Usuario {
         this.tipoUsuario = tipoUsuario;
     }
 
-
+    public void setAtivo(boolean ativo){
+        this.ativo = ativo;
+    }
 }

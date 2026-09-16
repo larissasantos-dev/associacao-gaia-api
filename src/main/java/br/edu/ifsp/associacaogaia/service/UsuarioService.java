@@ -4,6 +4,8 @@ import br.edu.ifsp.associacaogaia.dto.LoginDTO;
 import br.edu.ifsp.associacaogaia.exception.CredenciaisInvalidasException;
 import br.edu.ifsp.associacaogaia.dto.UsuarioCadastroDTO;
 import br.edu.ifsp.associacaogaia.exception.EmailJaCadastradoException;
+import br.edu.ifsp.associacaogaia.exception.UsuarioInativoException;
+import br.edu.ifsp.associacaogaia.exception.UsuarioNaoEncontradoException;
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
 import br.edu.ifsp.associacaogaia.repository.UsuarioRepository;
@@ -25,7 +27,10 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<Usuario> listarUsuarios() {
+    public List<Usuario> listarUsuarios(TipoUsuario tipo){
+        if(tipo != null){
+            return usuarioRepository.findByTipoUsuario(tipo);
+        }
         return usuarioRepository.findAll();
     }
 
@@ -67,6 +72,17 @@ public class UsuarioService {
             throw new CredenciaisInvalidasException("E-mail ou senha inválidos.");
         }
 
+        if (!usuario.isAtivo()) {
+            throw new UsuarioInativoException("Usuário desativado. Entre em contato com o administrador.");
+        }
         return usuario;
+    }
+
+    public Usuario alterarStatusUsuario(Long id, boolean ativo) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado."));
+
+        usuario.setAtivo(ativo);
+        return usuarioRepository.save(usuario);
     }
 }
