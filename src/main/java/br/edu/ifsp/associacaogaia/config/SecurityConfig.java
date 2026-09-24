@@ -1,5 +1,7 @@
 package br.edu.ifsp.associacaogaia.config;
 
+import br.edu.ifsp.associacaogaia.security.AccessDeniedHandlerCustom;
+import br.edu.ifsp.associacaogaia.security.AuthenticationEntryPointCustom;
 import br.edu.ifsp.associacaogaia.security.SecurityFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +24,14 @@ import java.util.List;
 public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
+    private final AuthenticationEntryPointCustom authenticationEntryPoint;
+    private final AccessDeniedHandlerCustom accessDeniedHandler;
+    public SecurityConfig(SecurityFilter securityFilter, AuthenticationEntryPointCustom authenticationEntryPoint,
+    AccessDeniedHandlerCustom accessDeniedHandler) {
 
-    public SecurityConfig(SecurityFilter securityFilter) {
         this.securityFilter = securityFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -51,7 +58,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(authenticationEntryPoint).authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMINISTRADOR")
