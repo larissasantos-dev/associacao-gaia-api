@@ -61,7 +61,7 @@ class SegurancaHttpRealTest {
         HttpResponse<String> resposta = get("/api/usuarios", tokenService.gerarToken(visitante));
 
         assertEquals(403, resposta.statusCode());
-        assertTrue(resposta.body().contains("Acesso negado"));
+        assertTrue(resposta.body().contains("\"status\":403"));
     }
 
     @Test
@@ -69,5 +69,17 @@ class SegurancaHttpRealTest {
         HttpResponse<String> resposta = get("/api/usuarios", null);
 
         assertEquals(401, resposta.statusCode());
+    }
+
+    @Test
+    void corpoInvalidoNoCadastro_deveRetornar400_eNaoRetornar401() throws Exception {
+        HttpRequest req = HttpRequest.newBuilder(URI.create("http://localhost:" + porta + "/api/usuarios"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"nome\":\"\",\"email\":\"invalido\"}"))
+                .build();
+
+        HttpResponse<String> resposta = http.send(req, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(400, resposta.statusCode());
     }
 }
