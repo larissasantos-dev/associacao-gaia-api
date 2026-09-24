@@ -111,9 +111,25 @@ class UsuarioControllerIntegrationTest {
     }
 
     @Test
-    void listarUsuarios_semToken_deveRetornar403() throws Exception {
+    void listarUsuarios_semToken_deveRetornar401ComCorpoJson() throws Exception {
         mockMvc.perform(get("/api/usuarios"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.erro").value("Não autenticado"));
+    }
+
+    @Test
+    void listarUsuarios_comTokenInvalido_deveRetornar401() throws Exception {
+        mockMvc.perform(get("/api/usuarios")
+                        .header("Authorization", "Bearer token.invalido.aqui"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void listarUsuarios_comHeaderSemPrefixoBearer_deveRetornar401() throws Exception {
+        mockMvc.perform(get("/api/usuarios")
+                        .header("Authorization", tokenAdmin))
+                .andExpect(status().isUnauthorized());
     }
 
     // ---------- BUSCAR POR ID (dono ou admin) ----------
