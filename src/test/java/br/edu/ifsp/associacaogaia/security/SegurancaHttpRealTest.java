@@ -2,6 +2,7 @@ package br.edu.ifsp.associacaogaia.security;
 
 import br.edu.ifsp.associacaogaia.model.TipoUsuario;
 import br.edu.ifsp.associacaogaia.model.Usuario;
+import br.edu.ifsp.associacaogaia.repository.ArtesaoRepository;
 import br.edu.ifsp.associacaogaia.repository.UsuarioRepository;
 import br.edu.ifsp.associacaogaia.service.TokenService;
 import org.junit.jupiter.api.AfterEach;
@@ -81,5 +82,21 @@ class SegurancaHttpRealTest {
         HttpResponse<String> resposta = http.send(req, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(400, resposta.statusCode());
+    }
+
+    @Autowired private ArtesaoRepository artesaoRepository;
+
+    @Test
+    void visitanteEmRotaDeArtesao_deveRetornar403() throws Exception{
+        HttpResponse<String> resposta = get("/api/artesaos/me", tokenService.gerarToken(visitante));
+
+        assertEquals(403, resposta.statusCode());
+    }
+
+    @Test
+    void trabalhosMeus_semToken_deveRetornar401() throws Exception{
+        HttpResponse<String> resposta = get("/api/trabalhos/meus", null);
+
+        assertEquals(401, resposta.statusCode());
     }
 }
