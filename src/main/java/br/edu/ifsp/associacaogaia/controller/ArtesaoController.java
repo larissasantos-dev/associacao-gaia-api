@@ -8,6 +8,7 @@ import br.edu.ifsp.associacaogaia.service.ArtesaoService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/artesaos")
 public class ArtesaoController {
-
     private final ArtesaoService artesaoService;
 
     public ArtesaoController(ArtesaoService artesaoService) {
@@ -34,6 +34,7 @@ public class ArtesaoController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("hasRole('ARTESAO')")
     public ArtesaoResponseDTO buscarMeuPerfil(@AuthenticationPrincipal UsuarioDetails usuarioDetails) {
         Long idUsuario = usuarioDetails.getUsuario().getIdUsuario();
         Artesao artesao = artesaoService.buscarPerfilDoUsuarioAutenticado(idUsuario);
@@ -41,6 +42,7 @@ public class ArtesaoController {
     }
 
     @PutMapping("/me")
+    @PreAuthorize("hasRole('ARTESAO')")
     public ArtesaoResponseDTO atualizarMeuPerfil(
             @Valid @RequestBody ArtesaoAtualizacaoDTO dto,
             @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
