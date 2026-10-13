@@ -43,4 +43,11 @@ public class GlobalExceptionHandler {
     public String tratarUsuarioNaoEncontrado(UsuarioNaoEncontradoException exception){
         return exception.getMessage();
     }
+
+    @ExceptionHandler(EventoNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String tratarEventoNaoEncontrado(
+            EventoNaoEncontradoException exception) {
+        return exception.getMessage();
+    }
 }
