@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/trabalhos")
 public class TrabalhoController {
-
     private final TrabalhoService trabalhoService;
 
     public TrabalhoController(TrabalhoService trabalhoService) {
@@ -63,6 +63,7 @@ public class TrabalhoController {
      * @return ResponseEntity com o trabalho criado e status 201
      */
     @PostMapping
+    @PreAuthorize("hasRole('ARTESAO')")
     public ResponseEntity<TrabalhoResponseDTO> cadastrarTrabalho(
             @Valid @RequestBody TrabalhoCadastroDTO dto,
             @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
@@ -88,6 +89,7 @@ public class TrabalhoController {
      *   404 Not Found — usuário autenticado não possui perfil de artesão
      */
     @GetMapping("/meus")
+    @PreAuthorize("hasRole('ARTESAO')")
     public List<TrabalhoResponseDTO> listarMeusTrabalhos(@AuthenticationPrincipal UsuarioDetails usuarioDetails) {
         Long idUsuario = usuarioDetails.getUsuario().getIdUsuario();
 
@@ -113,6 +115,7 @@ public class TrabalhoController {
      * @param usuarioDetails principal autenticado injetado pelo Spring Security
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ARTESAO')")
     public ResponseEntity<TrabalhoResponseDTO> atualizarTrabalho(
             @PathVariable Long id,
             @Valid @RequestBody TrabalhoCadastroDTO dto,
@@ -136,6 +139,7 @@ public class TrabalhoController {
      * @param usuarioDetails principal autenticado injetado pelo Spring Security
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ARTESAO')")
     public ResponseEntity<Void> excluirTrabalho(
             @PathVariable Long id,
             @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
