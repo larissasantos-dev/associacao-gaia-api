@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import br.edu.ifsp.associacaogaia.dto.EventoAtualizacaoDTO;
 import br.edu.ifsp.associacaogaia.dto.EventoCadastroDTO;
 import br.edu.ifsp.associacaogaia.dto.EventoResponseDTO;
+import br.edu.ifsp.associacaogaia.exception.EventoNaoEncontradoException;
 import br.edu.ifsp.associacaogaia.model.Evento;
 import br.edu.ifsp.associacaogaia.repository.EventoRepository;
 
@@ -40,7 +41,7 @@ public class EventoService {
     }
 
     public EventoResponseDTO buscarPorId(Long id) {
-    Evento evento = eventoRepository.findById(id).orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+    Evento evento = eventoRepository.findById(id).orElseThrow(EventoNaoEncontradoException::new);
 
     return new EventoResponseDTO(evento);
     }
@@ -48,7 +49,7 @@ public class EventoService {
     
     public EventoResponseDTO atualizar(Long id, EventoAtualizacaoDTO dto) {
         Evento evento = eventoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+                .orElseThrow(EventoNaoEncontradoException::new);
 
         if (dto.getImagemUrl() != null) {
             evento.setImagemUrl(dto.getImagemUrl());
@@ -80,7 +81,7 @@ public class EventoService {
 
     public void excluir(Long id) {
         if (!eventoRepository.existsById(id)) {
-            throw new RuntimeException("Evento não encontrado");
+            throw new EventoNaoEncontradoException();
         }
 
         eventoRepository.deleteById(id);
