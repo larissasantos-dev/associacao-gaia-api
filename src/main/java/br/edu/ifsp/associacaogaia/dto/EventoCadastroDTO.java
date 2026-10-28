@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 public class EventoCadastroDTO {
 
@@ -29,6 +30,13 @@ public class EventoCadastroDTO {
 
     @NotNull(message = "A hora é obrigatória.")
     private LocalTime hora;
+
+    @NotBlank(message = "A categoria é obrigatória.")
+    @Pattern(
+        regexp = "FEIRAS|OFICINAS|EXPOSICOES|PALESTRAS|CURSOS",
+        message = "A categoria informada não é válida."
+    )
+    private String categoria;
 
     public EventoCadastroDTO() {
     }
@@ -56,6 +64,10 @@ public class EventoCadastroDTO {
     public LocalTime getHora() {
         return hora;
     }
+    
+    public String getCategoria() {
+        return categoria;
+    }
 
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
@@ -79,5 +91,9 @@ public class EventoCadastroDTO {
 
     public void setHora(LocalTime hora) {
         this.hora = hora;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }

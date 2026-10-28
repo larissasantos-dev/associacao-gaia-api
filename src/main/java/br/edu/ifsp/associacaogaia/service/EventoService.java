@@ -29,6 +29,7 @@ public class EventoService {
         evento.setLocal(eventoCadastroDTO.getLocal());
         evento.setData(eventoCadastroDTO.getData());
         evento.setHora(eventoCadastroDTO.getHora());
+        evento.setCategoria(eventoCadastroDTO.getCategoria());
 
         Evento eventoSalvo = eventoRepository.save(evento);
         return new EventoResponseDTO(eventoSalvo);
@@ -73,6 +74,9 @@ public class EventoService {
 
         if (dto.getHora() != null) {
             evento.setHora(dto.getHora());
+        }
+        if (dto.getCategoria() != null) {
+            evento.setCategoria(dto.getCategoria());
         }
 
         Evento eventoSalvo = eventoRepository.save(evento);

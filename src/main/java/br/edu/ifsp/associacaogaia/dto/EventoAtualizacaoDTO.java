@@ -27,6 +27,12 @@ public class EventoAtualizacaoDTO {
 
     private LocalTime hora;
 
+    @Pattern(
+        regexp = "FEIRAS|OFICINAS|EXPOSICOES|PALESTRAS|CURSOS",
+        message = "A categoria informada não é válida."
+    )
+    private String categoria;
+
     public EventoAtualizacaoDTO() {
     }
 
@@ -54,6 +60,10 @@ public class EventoAtualizacaoDTO {
         return hora;
     }
 
+    public String getCategoria() {
+        return categoria;
+    }
+
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
     }
@@ -76,5 +86,8 @@ public class EventoAtualizacaoDTO {
 
     public void setHora(LocalTime hora) {
         this.hora = hora;
+    }
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }

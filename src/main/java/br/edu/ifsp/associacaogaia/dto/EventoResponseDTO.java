@@ -13,6 +13,7 @@ public class EventoResponseDTO {
     private String local;
     private LocalDate data;
     private LocalTime hora;
+    private String categoria;
 
     public Long getIdEvento(){
         return idEvento;
@@ -41,6 +42,9 @@ public class EventoResponseDTO {
     public LocalTime getHora() {
         return hora;
     }
+    public String getCategoria() {
+        return categoria;
+    }
 
     public EventoResponseDTO(Evento evento) {
         this.idEvento = evento.getIdEvento();
@@ -50,6 +54,7 @@ public class EventoResponseDTO {
         this.local = evento.getLocal();
         this.data = evento.getData();
         this.hora = evento.getHora();
+        this.categoria = evento.getCategoria();
     }
 
 }

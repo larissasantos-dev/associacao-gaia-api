@@ -33,6 +33,9 @@ public class Evento {
     @Column(name = "hora", nullable = false)
     private LocalTime hora;
 
+    @Column(name = "categoria", nullable = false, length = 30)
+    private String categoria;
+
     public Evento(){
     }
 
@@ -64,6 +67,10 @@ public class Evento {
         return hora;
     }
 
+    public String getCategoria() {
+        return categoria;
+    }
+
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
     }
@@ -86,5 +93,9 @@ public class Evento {
 
     public void setHora(LocalTime hora) {
         this.hora = hora;
+    }
+    
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }
