@@ -50,4 +50,22 @@ public class GlobalExceptionHandler {
             EventoNaoEncontradoException exception) {
         return exception.getMessage();
     }
+
+    @ExceptionHandler(SolicitacaoJaPendenteException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String tratarSolicitacaoJaPendente(SolicitacaoJaPendenteException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(PrazoReenvioNaoCumpridoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String tratarPrazoReenvio(PrazoReenvioNaoCumpridoException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(TipoUsuarioNaoPodeSolicitarException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String tratarTipoNaoPodeSolicitar(TipoUsuarioNaoPodeSolicitarException exception){
+        return exception.getMessage();
+    }
 }
