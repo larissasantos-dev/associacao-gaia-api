@@ -27,6 +27,7 @@ public class EventoAtualizacaoDTO {
 
     private LocalTime hora;
 
+    private Boolean cancelado;
     public EventoAtualizacaoDTO() {
     }
 
@@ -54,6 +55,10 @@ public class EventoAtualizacaoDTO {
         return hora;
     }
 
+    public Boolean getCancelado(){
+        return this.cancelado;
+    }
+
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
     }
@@ -76,5 +81,9 @@ public class EventoAtualizacaoDTO {
 
     public void setHora(LocalTime hora) {
         this.hora = hora;
+    }
+
+    public void setCancelado(Boolean cancelado){
+        this.cancelado = cancelado;
     }
 }

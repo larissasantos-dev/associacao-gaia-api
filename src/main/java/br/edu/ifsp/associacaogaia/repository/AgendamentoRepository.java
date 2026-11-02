@@ -27,4 +27,6 @@ public interface AgendamentoRepository
             Long idEvento,
             StatusAgendamento status
     );
+
+    boolean existsByEvento_idEvento(Long idEvento);
 }

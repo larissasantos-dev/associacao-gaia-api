@@ -33,6 +33,10 @@ public class Evento {
     @Column(name = "hora", nullable = false)
     private LocalTime hora;
 
+    @org.hibernate.annotations.ColumnDefault("false")
+    @Column(name = "cancelado", nullable = false)
+    private boolean cancelado;
+
     public Evento(){
     }
 
@@ -64,6 +68,10 @@ public class Evento {
         return hora;
     }
 
+    public boolean isCancelado(){
+        return cancelado;
+    }
+
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
     }
@@ -86,5 +94,9 @@ public class Evento {
 
     public void setHora(LocalTime hora) {
         this.hora = hora;
+    }
+
+    public void setCancelado(boolean cancelado){
+        this.cancelado = cancelado;
     }
 }

@@ -13,6 +13,7 @@ public class EventoResponseDTO {
     private String local;
     private LocalDate data;
     private LocalTime hora;
+    private boolean cancelado;
 
     public Long getIdEvento(){
         return idEvento;
@@ -42,6 +43,10 @@ public class EventoResponseDTO {
         return hora;
     }
 
+    public boolean isCancelado(){
+        return this.cancelado;
+    }
+
     public EventoResponseDTO(Evento evento) {
         this.idEvento = evento.getIdEvento();
         this.imagemUrl = evento.getImagemUrl();
@@ -50,6 +55,6 @@ public class EventoResponseDTO {
         this.local = evento.getLocal();
         this.data = evento.getData();
         this.hora = evento.getHora();
+        this.cancelado = evento.isCancelado();
     }
-
 }

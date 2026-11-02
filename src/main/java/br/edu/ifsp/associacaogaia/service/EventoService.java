@@ -1,5 +1,7 @@
 package br.edu.ifsp.associacaogaia.service;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,13 +13,16 @@ import br.edu.ifsp.associacaogaia.dto.EventoResponseDTO;
 import br.edu.ifsp.associacaogaia.exception.EventoNaoEncontradoException;
 import br.edu.ifsp.associacaogaia.model.Evento;
 import br.edu.ifsp.associacaogaia.repository.EventoRepository;
+import br.edu.ifsp.associacaogaia.repository.AgendamentoRepository;
 
 @Service
 public class EventoService {
     private final EventoRepository eventoRepository;
+    private final AgendamentoRepository agendamentoRepository;
 
-    public EventoService(EventoRepository eventoRepository) {
+    public EventoService(EventoRepository eventoRepository, AgendamentoRepository agendamentoRepository) {
         this.eventoRepository = eventoRepository;
+        this.agendamentoRepository = agendamentoRepository;
     }
 
     public EventoResponseDTO cadastrar(EventoCadastroDTO eventoCadastroDTO){
@@ -75,6 +80,10 @@ public class EventoService {
             evento.setHora(dto.getHora());
         }
 
+        if(dto.getCancelado() != null){
+            evento.setCancelado(dto.getCancelado());
+        }
+
         Evento eventoSalvo = eventoRepository.save(evento);
         return new EventoResponseDTO(eventoSalvo);
     }
@@ -84,8 +93,13 @@ public class EventoService {
             throw new EventoNaoEncontradoException();
         }
 
+        if(agendamentoRepository.existsByEvento_idEvento(id)){
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Este evento possui agendamentos. Cancele-o em vez de excluir."
+            );
+        }
+
         eventoRepository.deleteById(id);
     }
-
 }
-// Service pra eventos
