@@ -19,6 +19,7 @@ public class AgendamentoResponseDTO {
     private String local;
     private LocalDateTime dataAgendamento;
     private StatusAgendamento status;
+    private boolean eventoCancelado;
 
     public AgendamentoResponseDTO(Agendamento agendamento) {
         this.idAgendamento = agendamento.getIdAgendamento();
@@ -30,6 +31,7 @@ public class AgendamentoResponseDTO {
         this.local = agendamento.getEvento().getLocal();
         this.dataAgendamento = agendamento.getDataAgendamento();
         this.status = agendamento.getStatus();
+        this.eventoCancelado = agendamento.getEvento().isCancelado();
     }
 
     public Long getIdAgendamento() {
@@ -66,5 +68,9 @@ public class AgendamentoResponseDTO {
 
     public StatusAgendamento getStatus() {
         return status;
+    }
+
+    public boolean isEventoCancelado(){
+        return this.eventoCancelado;
     }
 }

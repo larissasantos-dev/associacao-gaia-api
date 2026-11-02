@@ -42,6 +42,9 @@ public class AgendamentoService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Evento não encontrado."));
 
+        if(evento.isCancelado()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este evento foi cancelado.");
+        }
         if (evento.getData() == null || evento.getHora() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
