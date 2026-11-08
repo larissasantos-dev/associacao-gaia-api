@@ -68,4 +68,22 @@ public class GlobalExceptionHandler {
     public String tratarTipoNaoPodeSolicitar(TipoUsuarioNaoPodeSolicitarException exception){
         return exception.getMessage();
     }
+
+    @ExceptionHandler(SolicitacaoNaoEncontradaException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String tratarSolicitacaoNaoEncontrda(SolicitacaoNaoEncontradaException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(SolicitacaoJaRespondidaException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String tratarSolicitacaoJaRespondida(SolicitacaoJaRespondidaException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(UsuarioNaoEhVisitanteException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String tratarUsuarioNaoEhVisitante(UsuarioNaoEhVisitanteException exception){
+        return exception.getMessage();
+    }
 }
