@@ -2,6 +2,7 @@ package br.edu.ifsp.associacaogaia.model;
 
 import jakarta.persistence.*;
 
+import java.time.Year;
 import java.time.LocalDateTime;
 
 @Entity
@@ -127,5 +128,29 @@ public class SolicitacaoArtesao {
 
     public void setWhatsappUrl(String whatsappUrl){
         this.whatsappUrl = whatsappUrl;
+    }
+
+    public void aprovar(){
+        this.status = StatusSolicitacao.APROVADA;
+        this.dataResposta = LocalDateTime.now();
+    }
+
+    public void rejeitar(String motivo){
+        this.status = StatusSolicitacao.REJEITADA;
+        this.dataResposta = LocalDateTime.now();
+        this.motivoRejeicao = motivo;
+    }
+
+    public Artesao criarPerfilArtesao(){
+        Artesao artesao = new Artesao();
+        artesao.setUsuario(this.usuario);
+        artesao.setNomeExibicao(this.nomeExibicao);
+        artesao.setTituloCurto(this.tituloCurto);
+        artesao.setCidade(this.cidade);
+        artesao.setBiografia(this.biografia);
+        artesao.setInstagram(this.instagram);
+        artesao.setWhatsappUrl(this.whatsappUrl);
+        artesao.setMembroDesde(String.valueOf(Year.now().getValue()));
+        return artesao;
     }
 }
