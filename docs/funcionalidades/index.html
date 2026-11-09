@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Documentação funcional da Associação Gaia, referente ao estado dos repositórios em 30 de setembro de 2026.">
+<title>Associação Gaia — Documentação de Funcionalidades</title>
+<style>
+:root{color-scheme:dark;--bg:#0f1115;--panel:#171a21;--line:#262b36;--text:#e6e9ef;--muted:#9aa4b2;--blue:#7db3ff;--green:#8fd6a8;--amber:#e1b777;--code:#1d212b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.72 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.layout{display:flex;min-height:100vh}.side{width:292px;flex:0 0 292px;padding:28px 20px;border-right:1px solid var(--line);background:#12151b;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{font-size:12px;color:var(--blue);font-weight:750;letter-spacing:.11em;text-transform:uppercase}.side h2{font-size:19px;line-height:1.3;margin:9px 0 22px}
+.side nav a{display:block;color:var(--muted);text-decoration:none;padding:6px 9px;border-radius:6px;font-size:13px}.side nav a:hover{background:var(--panel);color:var(--text)}
+main{max-width:1050px;width:100%;padding:44px 54px 80px;margin:0 auto}
+h1{font-size:34px;line-height:1.2;margin:8px 0 12px;letter-spacing:-.025em}h2{font-size:23px;line-height:1.3;margin:44px 0 12px;padding-bottom:9px;border-bottom:1px solid var(--line)}h3{font-size:17px;line-height:1.4;margin:25px 0 8px;color:var(--blue)}h4{font-size:15px;margin:20px 0 7px}
+p{color:#d2d7e0;margin:10px 0}.lead{font-size:17px;color:#c3cad5;max-width:820px}.meta{font-size:13px;color:var(--muted);margin:0 0 26px}
+.note{padding:15px 18px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:8px;margin:20px 0}.note.warn{border-left-color:var(--amber)}.note.good{border-left-color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:18px 0}.card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:16px}.card strong{display:block;color:var(--blue);margin-bottom:5px}
+table{width:100%;border-collapse:collapse;margin:14px 0 24px;font-size:13px}th,td{text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--blue);font-weight:700;background:#141820}td code{white-space:nowrap}
+code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{background:var(--code);padding:2px 5px;border-radius:4px;color:#d7e5ff;font-size:.92em}pre{background:var(--code);padding:14px;border:1px solid var(--line);border-radius:8px;overflow:auto;color:#d7e5ff}
+ul,ol{padding-left:23px;color:#d2d7e0}li{margin:5px 0}.muted{color:var(--muted)}a{color:var(--blue)}.pill{display:inline-block;font-size:11px;color:var(--green);border:1px solid #315744;border-radius:20px;padding:1px 8px;margin-left:5px;vertical-align:2px}
+.small{font-size:13px;color:var(--muted)}.flow{counter-reset:step;list-style:none;padding:0}.flow li{counter-increment:step;position:relative;padding:0 0 12px 38px}.flow li:before{content:counter(step);position:absolute;left:0;top:0;width:25px;height:25px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;color:var(--blue);font-size:12px}
+footer{border-top:1px solid var(--line);margin-top:55px;padding-top:18px;color:var(--muted);font-size:12px}
+@media(max-width:820px){.layout{display:block}.side{position:relative;width:auto;height:auto;border-right:0;border-bottom:1px solid var(--line)}.side nav{columns:2}.side nav a{break-inside:avoid}main{padding:30px 19px 60px}h1{font-size:29px}table{display:block;overflow-x:auto;white-space:normal}}
+@media print{body{color:#111;background:white}.side{display:none}main{max-width:none;padding:0;color:#111}.note,.card,pre{background:#f5f5f5;color:#111;border-color:#ccc}p,li{color:#222}h2{break-after:avoid}table{font-size:11px}a{color:#0645ad}}
+
+    .status { display:inline-block; padding:3px 8px; border-radius:999px; font-size:.72rem; font-weight:700; letter-spacing:.04em; white-space:nowrap; }
+    .status.done { color:#9be0b0; background:#183326; border:1px solid #315c43; }
+    .status.soon { color:#ffd58a; background:#3b2d17; border:1px solid #6d5128; }
+    .status.na { color:#c3c9d4; background:#292e38; border:1px solid #414957; }
+    .status-table td:first-child { min-width:220px; }
+
+  </style>
+</head>
+<body>
+<div class="layout">
+<aside class="side">
+  <div class="brand">Associação Gaia</div>
+  <h2>Documentação funcional</h2>
+  <nav>
+    <a href="#objetivo">Objetivo e escopo</a>
+    <a href="#visao-geral">Visão geral do sistema</a>
+    <a href="#papeis">Papéis de usuário</a>
+    <a href="#site-publico">Site institucional</a>
+    <a href="#cadastro">Cadastro</a>
+    <a href="#login">Login e sessão</a>
+    <a href="#usuarios">Consulta e edição de usuário</a>
+    <a href="#painel">Painel administrativo</a>
+    <a href="#artesao-api">Perfil do artesão (API)</a>
+    <a href="#trabalhos-api">Trabalhos (API)</a>
+    <a href="#seguranca">Segurança e regras</a>
+    <a href="#endpoints">Referência de endpoints</a>
+    <a href="#fora-escopo">Fora do escopo em setembro</a>
+    <a href="#fontes">Base documental</a>
+  </nav>
+</aside>
+<main>
+  <div class="brand">Documentação de funcionalidades · marco histórico</div>
+  <h1>Associação Gaia</h1>
+  <p class="lead">Descrição dos comportamentos disponíveis no website e na API da Associação Gaia ao final de setembro de 2026, com separação entre funcionalidades visíveis ao usuário e recursos implementados no backend.</p>
+  <p class="meta">Versão 1.0 · Referência: 30/09/2026 · Projeto acadêmico IFSP</p>
+
+  <section id="objetivo">
+    <h2>1. Objetivo e escopo</h2>
+    <p>Este documento descreve as funcionalidades do sistema Associação Gaia considerando o estado dos repositórios até <strong>30 de setembro de 2026</strong>. A documentação abrange o sistema como um todo, não apenas as atividades de uma pessoa da equipe.</p>
+    <p>O conteúdo foi delimitado por snapshots dos branches principais dos dois repositórios, correspondentes aos últimos merges identificados em setembro:</p>
+    <ul>
+      <li>Backend: <code>associacao-gaia-api</code>, snapshot <code>520be4c498a760e2c0ab7fef011a16a3699d94b5</code>.</li>
+      <li>Frontend: <code>Site-AssociacaoGaia</code>, snapshot <code>2cbc762a911a0343755cc84a473f06969b67f59b</code>.</li>
+    </ul>
+    <div class="note good"><strong>Critério de documentação:</strong> uma funcionalidade é descrita como integrada ao website somente quando há evidência no frontend desse fluxo. Endpoints existentes exclusivamente no backend são identificados como recursos da API, sem presumir que já possuíam uma tela conectada.</div>
+    <div class="note warn"><strong>Limite temporal:</strong> recursos integrados depois de 30/09/2026 não fazem parte do escopo funcional desta versão, mesmo que estejam presentes no branch <code>main</code> atual.</div>
+  </section>
+
+  <section id="visao-geral">
+    <h2>2. Visão geral do sistema</h2>
+    <p>A solução é composta por um website institucional, desenvolvido com HTML, CSS e JavaScript, e uma API REST desenvolvida em Java com Spring Boot. O backend utiliza Spring Data JPA para persistência em banco relacional e Spring Security para autenticação e autorização.</p>
+    <div class="grid">
+      <div class="card"><strong>Website institucional</strong>Apresenta a Associação, seus projetos, artesãos e conteúdos de eventos. Possui navegação responsiva e páginas de cadastro e login.</div>
+      <div class="card"><strong>Área administrativa</strong>Permite ao administrador consultar usuários, filtrar por tipo e ativar ou desativar contas.</div>
+      <div class="card"><strong>API REST</strong>Gerencia contas, autenticação, dados de usuário, perfil de artesão e trabalhos associados ao perfil.</div>
+    </div>
+    <p>O website utiliza uma URL base centralizada em <code>js/config.js</code>. Em ambiente local, a API é apontada para <code>http://localhost:8080</code>; fora de <code>localhost</code>, o frontend utiliza o endereço hospedado no Render configurado no arquivo.</p>
+  </section>
+
+  <section id="papeis">
+    <h2>3. Papéis de usuário</h2>
+    <table>
+      <thead><tr><th>Tipo</th><th>Descrição funcional</th></tr></thead>
+      <tbody>
+        <tr><td><code>VISITANTE</code></td><td>Tipo atribuído automaticamente a todo usuário criado pelo fluxo público de cadastro. Pode autenticar-se e utilizar as funcionalidades gerais permitidas a usuários autenticados.</td></tr>
+        <tr><td><code>ARTESAO</code></td><td>Tipo previsto para identificar usuários com perfil de artesão. A API já possui operações de consulta e atualização do próprio perfil e gerenciamento de trabalhos associados.</td></tr>
+        <tr><td><code>ADMINISTRADOR</code></td><td>Tipo com permissão para listar usuários e alterar o status de contas. O frontend também restringe a exibição e o acesso à interface do painel administrativo a esse tipo.</td></tr>
+      </tbody>
+    </table>
+    <p class="small">O cadastro público não permite escolher o tipo de usuário: o backend define <code>VISITANTE</code>. A promoção para artesão por solicitação e aprovação administrativa não estava implementada até o marco desta documentação.</p>
+  </section>
+
+  <section id="site-publico">
+    <h2>4. Site institucional</h2>
+    <p>O website oferece páginas públicas organizadas por conteúdo. No snapshot de setembro, os conteúdos de eventos, agenda, projetos e catálogo de artesãos são apresentados no frontend. A presença dessas páginas não significa que seus dados sejam administrados pela API.</p>
+    <h3>4.1 Página inicial</h3>
+    <ul>
+      <li>Apresenta a identidade e a proposta institucional da Associação Gaia.</li>
+      <li>Exibe seções de destaque e carrosséis de eventos e artesãos.</li>
+      <li>Os carrosséis da página inicial possuem navegação por controles e rotação automática implementadas em JavaScript.</li>
+      <li>Disponibiliza navegação para as demais áreas do website.</li>
+    </ul>
+    <h3>4.2 Eventos e agenda</h3>
+    <ul>
+      <li>A página de eventos apresenta cards com informações como título, local, data, imagem e categoria.</li>
+      <li>Há uma página de detalhe de evento preenchida a partir de identificador presente na URL e conteúdo definido no frontend.</li>
+      <li>A página de agenda apresenta uma composição visual de eventos salvos/destacados no próprio conteúdo do site.</li>
+      <li>Os links e rótulos de “Agendar” existentes no frontend não representam, neste marco, uma reserva persistida pela API.</li>
+    </ul>
+    <h3>4.3 Artesãos e projetos</h3>
+    <ul>
+      <li>A página de artesãos apresenta catálogo visual com informações e categorias.</li>
+      <li>A página individual de artesão apresenta estrutura de perfil, portfólio, contato e trajetória.</li>
+      <li>A página de projetos apresenta iniciativas e conteúdos institucionais.</li>
+      <li>Os conteúdos apresentados nessas páginas são parte da experiência de navegação do website; não se deve presumir sincronização com os endpoints de perfil e trabalhos descritos adiante.</li>
+    </ul>
+    <h3>4.4 Navegação e responsividade</h3>
+    <ul>
+      <li>Menu de navegação para desktop e menu lateral para dispositivos móveis.</li>
+      <li>Fechamento do menu móvel por botão ou sobreposição.</li>
+      <li>Layout desenvolvido com abordagem mobile-first e estilos responsivos.</li>
+      <li>Há recursos de acessibilidade no markup, como links para pular ao conteúdo principal em páginas que os incluem, rótulos e textos alternativos em elementos relevantes.</li>
+    </ul>
+  </section>
+
+  <section id="cadastro">
+    <h2>5. Cadastro de usuário</h2>
+    <p>O cadastro cria uma conta na plataforma a partir do formulário disponível em <code>pages/cadastro.html</code>. O frontend envia os dados para a API e, após sucesso, direciona o usuário à página de login.</p>
+    <h3>Dados solicitados</h3>
+    <table><thead><tr><th>Campo</th><th>Regra observada</th></tr></thead><tbody>
+      <tr><td>Nome</td><td>Obrigatório; não pode estar em branco.</td></tr>
+      <tr><td>E-mail</td><td>Obrigatório e deve possuir formato válido de e-mail. É único na base.</td></tr>
+      <tr><td>Senha</td><td>Obrigatória; armazenada no backend com codificação BCrypt.</td></tr>
+      <tr><td>Telefone</td><td>Obrigatório no DTO de cadastro.</td></tr>
+    </tbody></table>
+    <h3>Fluxo de execução</h3>
+    <ol class="flow">
+      <li>O usuário preenche nome, e-mail, senha e telefone.</li>
+      <li>O frontend valida campos vazios e o formato básico do e-mail.</li>
+      <li>O frontend envia <code>POST /api/usuarios</code> com os quatro campos em JSON.</li>
+      <li>O backend valida o DTO, verifica se o e-mail já está cadastrado e cria a conta como <code>VISITANTE</code>.</li>
+      <li>A senha é codificada antes da persistência; a resposta utiliza <code>UsuarioResponseDTO</code>, que não inclui senha.</li>
+      <li>Em caso de sucesso, o frontend redireciona para <code>login.html</code>.</li>
+    </ol>
+    <h3>Respostas e erros relevantes</h3>
+    <ul>
+      <li><code>201 Created</code>: cadastro realizado.</li>
+      <li><code>400 Bad Request</code>: dados inválidos.</li>
+      <li><code>409 Conflict</code>: e-mail já cadastrado.</li>
+    </ul>
+  </section>
+
+  <section id="login">
+    <h2>6. Login e gerenciamento de sessão</h2>
+    <p>O login autentica o usuário por e-mail e senha. O formulário em <code>pages/login.html</code> envia os dados à API, que verifica as credenciais e o status ativo da conta.</p>
+    <h3>Fluxo de execução</h3>
+    <ol class="flow">
+      <li>O usuário informa e-mail e senha.</li>
+      <li>O frontend verifica se os campos foram preenchidos.</li>
+      <li>O frontend envia <code>POST /api/usuarios/login</code> com <code>{ email, senha }</code>.</li>
+      <li>O backend procura a conta pelo e-mail, compara a senha informada com o hash armazenado e verifica se o usuário está ativo.</li>
+      <li>Se as verificações forem aprovadas, o backend gera um JWT e retorna o token junto aos dados públicos do usuário.</li>
+      <li>O frontend armazena o token em <code>localStorage</code> na chave <code>gaia_token</code> e os dados do usuário em <code>gaia_usuario</code>.</li>
+      <li>O usuário é redirecionado para a página inicial.</li>
+    </ol>
+    <h3>Regras e respostas</h3>
+    <ul>
+      <li><code>200 OK</code>: autenticação realizada; resposta contém token e usuário.</li>
+      <li><code>400 Bad Request</code>: falha de validação dos dados.</li>
+      <li><code>401 Unauthorized</code>: e-mail ou senha inválidos.</li>
+      <li>Conta inativa: login recusado pelo backend com exceção específica de usuário inativo.</li>
+    </ul>
+    <p>Nas requisições protegidas, o frontend envia o token no cabeçalho <code>Authorization: Bearer &lt;token&gt;</code>. A API não mantém sessão HTTP no servidor; o controle é stateless.</p>
+  </section>
+
+  <section id="usuarios">
+    <h2>7. Consulta e edição de dados do usuário</h2>
+    <p>A API disponibiliza operações para consultar dados de usuário e atualizar informações da própria conta. A resposta pública não contém senha.</p>
+    <h3>Consulta</h3>
+    <ul>
+      <li>Consulta por identificador: <code>GET /api/usuarios/{id}</code>.</li>
+      <li>Consulta por e-mail: <code>GET /api/usuarios/email/{email}</code>.</li>
+      <li>O acesso é permitido ao próprio usuário correspondente ou ao administrador.</li>
+    </ul>
+    <h3>Atualização</h3>
+    <p><code>PUT /api/usuarios/{id}</code> permite atualizar nome e telefone. A senha também pode ser atualizada quando enviada preenchida no DTO. A operação é permitida ao próprio usuário ou ao administrador.</p>
+    <p>O e-mail e o tipo de usuário não são alterados por esse fluxo de atualização implementado no service observado.</p>
+  </section>
+
+  <section id="painel">
+    <h2>8. Painel administrativo — gerenciamento de usuários</h2>
+    <p>O painel administrativo está disponível em <code>pages/painel-administrativo.html</code> e utiliza <code>js/admin.js</code>. A interface é exibida somente quando existe sessão local e o usuário armazenado possui o tipo <code>ADMINISTRADOR</code>.</p>
+    <h3>Funcionalidades disponíveis</h3>
+    <ul>
+      <li>Consultar a lista de usuários cadastrados.</li>
+      <li>Exibir nome, e-mail, tipo de usuário, data de cadastro e status da conta.</li>
+      <li>Filtrar os registros por tipo de usuário na interface.</li>
+      <li>Exibir contador de usuários e estado de lista vazia.</li>
+      <li>Ativar ou desativar uma conta por meio de ação individual.</li>
+    </ul>
+    <h3>Fluxo de listagem</h3>
+    <ol class="flow">
+      <li>O script verifica a existência do token e dos dados do usuário em <code>localStorage</code>.</li>
+      <li>Se não houver sessão ou o tipo não for <code>ADMINISTRADOR</code>, o usuário é redirecionado para fora do painel.</li>
+      <li>O painel envia <code>GET /api/usuarios</code> com o token JWT.</li>
+      <li>O backend autoriza a listagem apenas para administradores e retorna os usuários.</li>
+      <li>O frontend aplica o filtro selecionado e renderiza a tabela.</li>
+    </ol>
+    <h3>Ativação e desativação</h3>
+    <ol class="flow">
+      <li>O administrador aciona “Ativar” ou “Desativar” na linha do usuário.</li>
+      <li>O frontend inverte o valor atual de <code>ativo</code> e envia <code>PATCH /api/usuarios/{id}/status</code>.</li>
+      <li>O corpo da requisição contém o novo valor booleano: <code>{ "ativo": true }</code> ou <code>{ "ativo": false }</code>.</li>
+      <li>O backend verifica a permissão administrativa, atualiza o status e persiste a alteração.</li>
+      <li>O frontend recarrega a listagem para refletir o novo estado.</li>
+    </ol>
+    <div class="note warn"><strong>Importante:</strong> a checagem de papel no frontend controla a experiência visual, mas não substitui a autorização do backend. As rotas administrativas também são protegidas no Spring Security.</div>
+  </section>
+
+  <section id="artesao-api">
+    <h2>9. Perfil do artesão — recurso disponível na API</h2>
+    <p>No snapshot do backend em 30/09, já existiam <code>ArtesaoController</code> e <code>ArtesaoService</code>. Eles permitem consultar e atualizar o perfil associado ao usuário autenticado. O identificador do usuário é obtido do principal autenticado, não enviado pelo cliente.</p>
+    <table><thead><tr><th>Método</th><th>Endpoint</th><th>Comportamento</th></tr></thead><tbody>
+      <tr><td>GET</td><td><code>/api/artesaos/me</code></td><td>Retorna o perfil de artesão vinculado ao usuário autenticado.</td></tr>
+      <tr><td>PUT</td><td><code>/api/artesaos/me</code></td><td>Atualiza os dados do perfil vinculado ao usuário autenticado.</td></tr>
+    </tbody></table>
+    <p>Os campos tratados pelo service incluem nome de exibição, título curto, biografia, texto de apresentação, cidade, data de entrada como membro, locais de atendimento, avatar e links de Instagram, WhatsApp e Facebook.</p>
+    <p>Se não houver perfil de artesão associado ao usuário, o service lança exceção específica de artesão não encontrado.</p>
+    <div class="note warn"><strong>Limite de integração:</strong> embora os endpoints existissem no backend, o snapshot do frontend não comprova um fluxo de edição de perfil conectado a essas rotas. Por isso, esta seção documenta a capacidade da API, não uma funcionalidade pública integrada do website.</div>
+  </section>
+
+  <section id="trabalhos-api">
+    <h2>10. Trabalhos — recurso disponível na API</h2>
+    <p>O backend também possuía operações para cadastrar, listar, atualizar e excluir trabalhos associados ao perfil do artesão autenticado.</p>
+    <table><thead><tr><th>Método</th><th>Endpoint</th><th>Comportamento</th></tr></thead><tbody>
+      <tr><td>POST</td><td><code>/api/trabalhos</code></td><td>Cadastra um trabalho no portfólio do artesão autenticado.</td></tr>
+      <tr><td>GET</td><td><code>/api/trabalhos/meus</code></td><td>Lista os trabalhos do artesão autenticado, do mais recente para o mais antigo.</td></tr>
+      <tr><td>PUT</td><td><code>/api/trabalhos/{id}</code></td><td>Atualiza um trabalho, desde que pertença ao artesão autenticado.</td></tr>
+      <tr><td>DELETE</td><td><code>/api/trabalhos/{id}</code></td><td>Exclui um trabalho, desde que pertença ao artesão autenticado.</td></tr>
+    </tbody></table>
+    <h3>Dados de um trabalho</h3>
+    <table><thead><tr><th>Campo</th><th>Regra</th></tr></thead><tbody>
+      <tr><td><code>imagemUrl</code></td><td>Obrigatório; URL da imagem, máximo de 255 caracteres.</td></tr>
+      <tr><td><code>legenda</code></td><td>Obrigatória; máximo de 150 caracteres.</td></tr>
+      <tr><td><code>descricao</code></td><td>Opcional.</td></tr>
+      <tr><td><code>categoria</code></td><td>Opcional; máximo de 100 caracteres.</td></tr>
+    </tbody></table>
+    <p>O backend determina o artesão a partir do usuário autenticado e preenche a data de publicação automaticamente. Nas operações de atualização e exclusão, o service verifica a propriedade do trabalho. Uma tentativa de alterar trabalho pertencente a outro artesão resulta em acesso negado.</p>
+    <div class="note warn"><strong>Limite de integração:</strong> a existência do CRUD na API não comprova que o website, no snapshot de setembro, oferecia telas conectadas para gerenciar o portfólio. O catálogo público observado era conteúdo do frontend.</div>
+  </section>
+
+  <section id="seguranca">
+    <h2>11. Segurança e regras transversais</h2>
+    <h3>Autenticação</h3>
+    <ul>
+      <li>Autenticação por JWT.</li>
+      <li>Token enviado em requisições protegidas pelo cabeçalho <code>Authorization: Bearer</code>.</li>
+      <li>Política de sessão stateless.</li>
+      <li>Senhas armazenadas com BCrypt.</li>
+    </ul>
+    <h3>Autorização observada no snapshot de setembro</h3>
+    <ul>
+      <li>Cadastro e login são públicos.</li>
+      <li>Listagem geral de usuários é restrita a <code>ADMINISTRADOR</code>.</li>
+      <li>Consulta e atualização de usuário por identificador/e-mail são limitadas ao próprio usuário ou administrador, conforme as expressões <code>@PreAuthorize</code>.</li>
+      <li>Alteração do status de usuário exige <code>ADMINISTRADOR</code>.</li>
+      <li>As demais rotas exigem autenticação, salvo as explicitamente liberadas.</li>
+    </ul>
+    <div class="note warn"><strong>Observação de implementação:</strong> no snapshot histórico consultado, <code>ArtesaoController</code> e <code>TrabalhoController</code> não possuíam anotações de autorização por papel em seus métodos. As rotas exigiam usuário autenticado pela regra geral, e a lógica de trabalhos verificava a propriedade nas operações de atualização e exclusão. Não se deve documentar uma restrição a papel ARTESAO nesses endpoints como se ela já estivesse configurada naquele marco.</div>
+    <h3>Tratamento de falhas</h3>
+    <ul>
+      <li><code>400 Bad Request</code>: falha de validação dos dados recebidos.</li>
+      <li><code>401 Unauthorized</code>: ausência ou invalidade de autenticação, ou credenciais inválidas no login.</li>
+      <li><code>403 Forbidden</code>: usuário autenticado sem autorização para a operação ou tentativa de alterar trabalho de outro artesão.</li>
+      <li><code>404 Not Found</code>: recurso ou perfil associado não encontrado.</li>
+      <li><code>409 Conflict</code>: e-mail já cadastrado.</li>
+    </ul>
+  </section>
+
+  <section id="endpoints">
+    <h2>12. Referência consolidada de endpoints</h2>
+    <p>A tabela reúne as rotas encontradas no backend no snapshot histórico. “Autenticado” significa que a requisição precisa apresentar JWT válido; as regras específicas são indicadas separadamente.</p>
+    <table><thead><tr><th>Método</th><th>Endpoint</th><th>Acesso</th><th>Descrição</th></tr></thead><tbody>
+      <tr><td>POST</td><td><code>/api/usuarios</code></td><td>Público</td><td>Criar conta de visitante.</td></tr>
+      <tr><td>POST</td><td><code>/api/usuarios/login</code></td><td>Público</td><td>Autenticar e emitir JWT.</td></tr>
+      <tr><td>GET</td><td><code>/api/usuarios</code></td><td>Administrador</td><td>Listar usuários; backend aceita filtro opcional <code>tipo</code>.</td></tr>
+      <tr><td>GET</td><td><code>/api/usuarios/{id}</code></td><td>Próprio usuário ou administrador</td><td>Consultar usuário por ID.</td></tr>
+      <tr><td>GET</td><td><code>/api/usuarios/email/{email}</code></td><td>Próprio usuário ou administrador</td><td>Consultar usuário por e-mail.</td></tr>
+      <tr><td>PUT</td><td><code>/api/usuarios/{id}</code></td><td>Próprio usuário ou administrador</td><td>Atualizar nome, telefone e, opcionalmente, senha.</td></tr>
+      <tr><td>PATCH</td><td><code>/api/usuarios/{id}/status</code></td><td>Administrador</td><td>Ativar ou desativar conta.</td></tr>
+      <tr><td>GET</td><td><code>/api/artesaos/me</code></td><td>Autenticado</td><td>Consultar perfil de artesão vinculado ao usuário.</td></tr>
+      <tr><td>PUT</td><td><code>/api/artesaos/me</code></td><td>Autenticado</td><td>Atualizar perfil de artesão.</td></tr>
+      <tr><td>POST</td><td><code>/api/trabalhos</code></td><td>Autenticado</td><td>Cadastrar trabalho no próprio portfólio.</td></tr>
+      <tr><td>GET</td><td><code>/api/trabalhos/meus</code></td><td>Autenticado</td><td>Listar trabalhos do próprio portfólio.</td></tr>
+      <tr><td>PUT</td><td><code>/api/trabalhos/{id}</code></td><td>Autenticado + validação de propriedade</td><td>Atualizar trabalho próprio.</td></tr>
+      <tr><td>DELETE</td><td><code>/api/trabalhos/{id}</code></td><td>Autenticado + validação de propriedade</td><td>Excluir trabalho próprio.</td></tr>
+    </tbody></table>
+  </section>
+
+  <section id="fora-escopo">
+    <h2>13. Funcionalidades pendentes no marco de 30/09/2026</h2>
+    <p>Esta seção registra o que ainda não estava disponível no sistema até a data de corte. Os itens marcados como <span class="status soon">EM BREVE</span> representam fluxos previstos no trabalho da equipe, mas ainda não concluídos naquele marco. A indicação não significa que a funcionalidade já estivesse operacional.</p>
+    <table class="status-table"><thead><tr><th>Funcionalidade</th><th>Status em 30/09/2026</th><th>O que faltava</th></tr></thead><tbody>
+      <tr><td>Solicitação para se tornar artesão</td><td><span class="status soon">EM BREVE</span></td><td>Não havia fluxo integrado para o visitante enviar uma solicitação de mudança de perfil. A implementação só foi integrada ao backend em 29/10/2026 e ao frontend em 04/11/2026.</td></tr>
+      <tr><td>Aprovação ou rejeição de solicitação de artesão</td><td><span class="status soon">EM BREVE</span></td><td>Não havia fluxo administrativo para analisar a solicitação e alterar o status do pedido. As integrações correspondentes ocorreram em 08/11/2026.</td></tr>
+      <tr><td>Gestão dinâmica de eventos pela API</td><td><span class="status na">NÃO DISPONÍVEL</span></td><td>As páginas de eventos e agenda exibiam conteúdo do frontend; não havia, no snapshot, o fluxo completo de gerenciamento e persistência de eventos pela API. A integração backend começou depois de setembro.</td></tr>
+      <tr><td>Agendamento persistido e cancelamento pela API</td><td><span class="status na">NÃO DISPONÍVEL</span></td><td>A página visual de agenda e seus links não comprovavam criação, persistência ou cancelamento de reservas no backend.</td></tr>
+      <tr><td>Newsletter</td><td><span class="status na">NÃO INCLUÍDA</span></td><td>Não foi identificada implementação funcional no snapshot de 30/09/2026.</td></tr>
+    </tbody></table>
+    <div class="note warn"><strong>Importante:</strong> “Em breve” é um marcador de pendência, não uma promessa de prazo. Quando não há evidência de que um item estivesse planejado, a documentação usa “não disponível” ou “não incluído”, em vez de afirmar que seria entregue futuramente.</div>
+    <p>As funcionalidades integradas depois de 30/09/2026 ficam registradas apenas como contexto histórico. Elas não alteram o status do sistema na data de corte desta documentação.</p>
+  </section>
+
+  <section id="fontes">
+    <h2>14. Base documental e repositórios</h2>
+    <p>Esta documentação foi elaborada a partir da leitura do código-fonte e dos snapshots de setembro de 2026, não apenas dos READMEs atuais.</p>
+    <ul>
+      <li><a href="https://github.com/larissasantos-dev/associacao-gaia-api">Repositório backend — associacao-gaia-api</a></li>
+      <li><a href="https://github.com/larissasantos-dev/Site-AssociacaoGaia">Repositório frontend — Site-AssociacaoGaia</a></li>
+      <li><a href="https://github.com/larissasantos-dev/associacao-gaia-api/tree/main/docs/javadoc">Documentação de classes — Javadoc</a></li>
+      <li><a href="https://github.com/larissasantos-dev/associacao-gaia-api/commit/520be4c498a760e2c0ab7fef011a16a3699d94b5">Snapshot do backend usado nesta documentação</a></li>
+      <li><a href="https://github.com/larissasantos-dev/Site-AssociacaoGaia/commit/2cbc762a911a0343755cc84a473f06969b67f59b">Snapshot do frontend usado nesta documentação</a></li>
+    </ul>
+    <p class="small">A documentação descreve os contratos e comportamentos identificados no código. Não representa, por si só, um relatório de testes de ponta a ponta nem uma garantia de disponibilidade dos serviços hospedados.</p>
+  </section>
+
+  <footer>
+    Associação Gaia · Documentação de Funcionalidades · Versão 1.1 · Marco de referência: 30/09/2026.<br>
+    Documento funcional. A documentação técnica das classes permanece na seção Javadoc do backend.
+  </footer>
+</main>
+</div>
+</body>
+</html>
