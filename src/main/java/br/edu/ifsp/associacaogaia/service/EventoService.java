@@ -40,21 +40,24 @@ public class EventoService {
     }
 
     public List<EventoResponseDTO> listarTodos() {
-        List<Evento> eventos = eventoRepository.findAll();
+        List<Evento> eventos = eventoRepository.findByDataExclusaoIsNull();
 
         return eventos.stream().map(EventoResponseDTO::new).collect(Collectors.toList());
     }
 
     public EventoResponseDTO buscarPorId(Long id) {
-    Evento evento = eventoRepository.findById(id).orElseThrow(EventoNaoEncontradoException::new);
+        Evento evento = eventoRepository.findById(id)
+                .filter(e -> e.getDataExclusao() == null)
+                .orElseThrow(EventoNaoEncontradoException::new);
 
-    return new EventoResponseDTO(evento);
+        return new EventoResponseDTO(evento);
     }
 
     
     public EventoResponseDTO atualizar(Long id, EventoAtualizacaoDTO dto) {
         Evento evento = eventoRepository.findById(id)
-                .orElseThrow(EventoNaoEncontradoException::new);
+        .filter(e -> e.getDataExclusao() == null)
+        .orElseThrow(EventoNaoEncontradoException::new);
 
         if (dto.getImagemUrl() != null) {
             evento.setImagemUrl(dto.getImagemUrl());
@@ -89,17 +92,17 @@ public class EventoService {
     }
 
     public void excluir(Long id) {
-        if (!eventoRepository.existsById(id)) {
-            throw new EventoNaoEncontradoException();
-        }
+        Evento evento = eventoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
 
-        if(agendamentoRepository.existsByEvento_idEvento(id)){
+        if (evento.getDataExclusao() != null) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Este evento possui agendamentos. Cancele-o em vez de excluir."
+                HttpStatus.CONFLICT,
+                "Este evento já foi excluído."
             );
         }
 
-        eventoRepository.deleteById(id);
+        evento.desativar();
+        eventoRepository.save(evento);
     }
 }

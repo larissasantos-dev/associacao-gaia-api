@@ -2,6 +2,7 @@ package br.edu.ifsp.associacaogaia.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
@@ -36,6 +37,9 @@ public class Evento {
     @org.hibernate.annotations.ColumnDefault("false")
     @Column(name = "cancelado", nullable = false)
     private boolean cancelado;
+
+    @Column(name = "data_exclusao")
+    private LocalDateTime dataExclusao;
 
     public Evento(){
     }
@@ -72,6 +76,10 @@ public class Evento {
         return cancelado;
     }
 
+    public LocalDateTime getDataExclusao() {
+        return dataExclusao;
+    }
+
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
     }
@@ -98,5 +106,9 @@ public class Evento {
 
     public void setCancelado(boolean cancelado){
         this.cancelado = cancelado;
+    }
+
+    public void desativar() {
+        this.dataExclusao = LocalDateTime.now();
     }
 }
