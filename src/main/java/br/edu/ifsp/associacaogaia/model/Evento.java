@@ -1,11 +1,13 @@
+
 package br.edu.ifsp.associacaogaia.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-@Entity // Aqui fica a área do Evento no Banco de dados, com todas as informações necessarias para criar um evento.
+@Entity
 @Table(name = "evento")
 public class Evento {
 
@@ -17,10 +19,13 @@ public class Evento {
     @Column(name = "imagem_url", nullable = false, length = 255)
     private String imagemUrl;
 
+    @Column(name = "imagem_public_id", length = 255)
+    private String imagemPublicId;
+
     @Column(name = "titulo", nullable = false, length = 150)
     private String titulo;
 
-    @Lob 
+    @Lob
     @Column(name = "descricao")
     private String descricao;
 
@@ -33,47 +38,62 @@ public class Evento {
     @Column(name = "hora", nullable = false)
     private LocalTime hora;
 
-    @org.hibernate.annotations.ColumnDefault("false")
+    @Column(name = "categoria", nullable = false, length = 30)
+    private String categoria;
+
+    @ColumnDefault("false")
     @Column(name = "cancelado", nullable = false)
     private boolean cancelado;
 
-    public Evento(){
+    public Evento() {
     }
 
-    public Long getIdEvento(){
+    public Long getIdEvento() {
         return idEvento;
     }
 
-    public String getImagemUrl(){
+    public String getImagemUrl() {
         return imagemUrl;
     }
 
-    public String getTitulo(){
+    public String getImagemPublicId() {
+        return imagemPublicId;
+    }
+
+    public String getTitulo() {
         return titulo;
     }
 
-    public String getDescricao(){
+    public String getDescricao() {
         return descricao;
     }
 
-    public String getLocal(){
+    public String getLocal() {
         return local;
     }
 
-    public LocalDate getData(){
+    public LocalDate getData() {
         return data;
     }
 
-    public LocalTime getHora(){
+    public LocalTime getHora() {
         return hora;
     }
 
-    public boolean isCancelado(){
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public boolean isCancelado() {
         return cancelado;
     }
 
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
+    }
+
+    public void setImagemPublicId(String imagemPublicId) {
+        this.imagemPublicId = imagemPublicId;
     }
 
     public void setTitulo(String titulo) {
@@ -96,7 +116,11 @@ public class Evento {
         this.hora = hora;
     }
 
-    public void setCancelado(boolean cancelado){
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setCancelado(boolean cancelado) {
         this.cancelado = cancelado;
     }
 }

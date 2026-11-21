@@ -1,3 +1,4 @@
+
 package br.edu.ifsp.associacaogaia.controller;
 
 import java.util.List;
@@ -6,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,9 +31,9 @@ public class EventoController {
         this.eventoService = eventoService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<EventoResponseDTO> cadastrar(
-            @Valid @RequestBody EventoCadastroDTO dto) {
+            @Valid @ModelAttribute EventoCadastroDTO dto) {
 
         EventoResponseDTO eventoSalvo = eventoService.cadastrar(dto);
 
@@ -57,10 +58,10 @@ public class EventoController {
         return ResponseEntity.ok(evento);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<EventoResponseDTO> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody EventoAtualizacaoDTO dto) {
+            @Valid @ModelAttribute EventoAtualizacaoDTO dto) {
 
         EventoResponseDTO eventoAtualizado = eventoService.atualizar(id, dto);
 

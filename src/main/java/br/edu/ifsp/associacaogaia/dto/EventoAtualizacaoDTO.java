@@ -1,25 +1,30 @@
-
 package br.edu.ifsp.associacaogaia.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class EventoAtualizacaoDTO {
 
-    @Pattern(regexp = ".*\\S.*", message = "A URL da imagem não pode estar vazia ou conter apenas espaços.")
-    @Size(max = 255, message = "A URL da imagem deve ter no máximo 255 caracteres.")
-    private String imagemUrl;
+    private MultipartFile imagem;
 
-    @Pattern(regexp = ".*\\S.*", message = "O título não pode estar vazio ou conter apenas espaços.")
+    @Pattern(
+            regexp = ".*\\S.*",
+            message = "O título não pode estar vazio ou conter apenas espaços."
+    )
     @Size(max = 150, message = "O título deve ter no máximo 150 caracteres.")
     private String titulo;
 
     private String descricao;
 
-    @Pattern(regexp = ".*\\S.*", message = "O local não pode estar vazio ou conter apenas espaços.")
+    @Pattern(
+            regexp = ".*\\S.*",
+            message = "O local não pode estar vazio ou conter apenas espaços."
+    )
     @Size(max = 255, message = "O local deve ter no máximo 255 caracteres.")
     private String local;
 
@@ -27,12 +32,19 @@ public class EventoAtualizacaoDTO {
 
     private LocalTime hora;
 
+    @Pattern(
+            regexp = "feira|oficina|exposicao|palestras|cursos",
+            message = "Categoria inválida."
+    )
+    private String categoria;
+
     private Boolean cancelado;
+
     public EventoAtualizacaoDTO() {
     }
 
-    public String getImagemUrl() {
-        return imagemUrl;
+    public MultipartFile getImagem() {
+        return imagem;
     }
 
     public String getTitulo() {
@@ -55,12 +67,16 @@ public class EventoAtualizacaoDTO {
         return hora;
     }
 
-    public Boolean getCancelado(){
-        return this.cancelado;
+    public String getCategoria() {
+        return categoria;
     }
 
-    public void setImagemUrl(String imagemUrl) {
-        this.imagemUrl = imagemUrl;
+    public Boolean getCancelado() {
+        return cancelado;
+    }
+
+    public void setImagem(MultipartFile imagem) {
+        this.imagem = imagem;
     }
 
     public void setTitulo(String titulo) {
@@ -83,7 +99,11 @@ public class EventoAtualizacaoDTO {
         this.hora = hora;
     }
 
-    public void setCancelado(Boolean cancelado){
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setCancelado(Boolean cancelado) {
         this.cancelado = cancelado;
     }
 }

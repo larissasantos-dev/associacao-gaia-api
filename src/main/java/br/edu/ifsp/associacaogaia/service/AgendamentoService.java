@@ -36,7 +36,7 @@ public class AgendamentoService {
 
     @Transactional
     public Agendamento agendar(Long idUsuario, Long idEvento) {
-        Usuario usuario = buscarVisitanteAtivo(idUsuario);
+        Usuario usuario = buscarUsuarioAtivo(idUsuario);
 
         Evento evento = eventoRepository.findById(idEvento)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -80,7 +80,7 @@ public class AgendamentoService {
 
     @Transactional(readOnly = true)
     public List<Agendamento> listarMeusAgendamentos(Long idUsuario) {
-        buscarVisitanteAtivo(idUsuario);
+        buscarUsuarioAtivo(idUsuario);
 
         return agendamentoRepository
                 .findByUsuario_IdUsuario(idUsuario);
@@ -88,7 +88,7 @@ public class AgendamentoService {
 
     @Transactional(readOnly = true)
     public List<Agendamento> listarMeusAgendamentosAtivos(Long idUsuario) {
-        buscarVisitanteAtivo(idUsuario);
+        buscarUsuarioAtivo(idUsuario);
 
         return agendamentoRepository
                 .findByUsuario_IdUsuarioAndStatus(
@@ -98,7 +98,8 @@ public class AgendamentoService {
 
     @Transactional
     public Agendamento cancelar(Long idAgendamento, Long idUsuario) {
-        buscarVisitanteAtivo(idUsuario);
+        buscarUsuarioAtivo
+                (idUsuario);
 
         Agendamento agendamento =
                 agendamentoRepository
@@ -120,7 +121,7 @@ public class AgendamentoService {
         return agendamentoRepository.save(agendamento);
     }
 
-    private Usuario buscarVisitanteAtivo(Long idUsuario) {
+    private Usuario buscarUsuarioAtivo(Long idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -130,12 +131,6 @@ public class AgendamentoService {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "Sua conta está inativa.");
-        }
-
-        if (usuario.getTipoUsuario() != TipoUsuario.VISITANTE) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Somente visitantes podem realizar agendamentos.");
         }
 
         return usuario;
