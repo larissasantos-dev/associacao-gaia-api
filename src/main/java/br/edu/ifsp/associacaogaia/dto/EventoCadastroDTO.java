@@ -3,21 +3,21 @@ package br.edu.ifsp.associacaogaia.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class EventoCadastroDTO {
 
-    @NotBlank(message = "A imagem é obrigatória.")
-    @Size(max = 255, message = "A URL da imagem deve ter no máximo 255 caracteres.")
-    private String imagemUrl;
+    private MultipartFile imagem;
 
     @NotBlank(message = "O título é obrigatório.")
     @Size(max = 150, message = "O título deve ter no máximo 150 caracteres.")
     private String titulo;
 
-    // Opcional
     private String descricao;
 
     @NotBlank(message = "O local é obrigatório.")
@@ -30,11 +30,18 @@ public class EventoCadastroDTO {
     @NotNull(message = "A hora é obrigatória.")
     private LocalTime hora;
 
+    @NotBlank(message = "A categoria é obrigatória.")
+    @Pattern(
+            regexp = "feira|oficina|exposicao|palestras|cursos",
+            message = "Categoria inválida."
+    )
+    private String categoria;
+
     public EventoCadastroDTO() {
     }
 
-    public String getImagemUrl() {
-        return imagemUrl;
+    public MultipartFile getImagem() {
+        return imagem;
     }
 
     public String getTitulo() {
@@ -57,8 +64,12 @@ public class EventoCadastroDTO {
         return hora;
     }
 
-    public void setImagemUrl(String imagemUrl) {
-        this.imagemUrl = imagemUrl;
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setImagem(MultipartFile imagem) {
+        this.imagem = imagem;
     }
 
     public void setTitulo(String titulo) {
@@ -79,5 +90,9 @@ public class EventoCadastroDTO {
 
     public void setHora(LocalTime hora) {
         this.hora = hora;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }

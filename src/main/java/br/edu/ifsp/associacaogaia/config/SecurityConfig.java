@@ -60,15 +60,28 @@ public class SecurityConfig {
                 .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/error").permitAll()
+
+                        // Rotas públicas
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+
+                        // Usuários
                         .requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMINISTRADOR")
+
+                        // Eventos
                         .requestMatchers(HttpMethod.GET, "/eventos", "/eventos/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/eventos", "/eventos/**").hasRole("ADMINISTRADOR")
                         .requestMatchers(HttpMethod.PATCH, "/eventos/**").hasRole("ADMINISTRADOR")
                         .requestMatchers(HttpMethod.DELETE, "/eventos/**").hasRole("ADMINISTRADOR")
+
+                        // Administração de solicitações
                         .requestMatchers("/api/admin/solicitacoes-artesao/**").hasRole("ADMINISTRADOR")
-                        .requestMatchers("/agendamentos", "/agendamentos/**").hasRole("VISITANTE").anyRequest().authenticated()
+
+                        // Agendamentos
+                        .requestMatchers("/agendamentos", "/agendamentos/**").authenticated()
+
+                        // Todas as demais rotas exigem autenticação
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
