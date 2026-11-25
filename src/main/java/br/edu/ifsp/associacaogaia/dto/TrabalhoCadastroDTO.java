@@ -1,5 +1,9 @@
 package br.edu.ifsp.associacaogaia.dto;
 
+import java.math.BigDecimal;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -33,6 +37,11 @@ public class TrabalhoCadastroDTO {
     @Size(max = 100, message = "A categoria deve ter no máximo 100 caracteres.")
     private String categoria;
 
+    // Opcional — nulo significa "sob consulta"
+    @DecimalMin(value = "0.00", message = "O preço não pode ser negativo.")
+    @Digits(integer = 8, fraction = 2, message = "O preço deve ter no máximo 8 dígitos e 2 casas decimais.")
+    private BigDecimal preco;
+
     // --- Construtores ---
 
     /** Construtor padrão exigido pelo Jackson para desserialização do JSON */
@@ -56,6 +65,10 @@ public class TrabalhoCadastroDTO {
         return categoria;
     }
 
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
     // --- Setters (necessários para o Jackson preencher o objeto) ---
 
     public void setImagemUrl(String imagemUrl) {
@@ -72,5 +85,9 @@ public class TrabalhoCadastroDTO {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
     }
 }

@@ -12,4 +12,7 @@ public interface TrabalhoRepository extends JpaRepository<Trabalho, Long> {
      * Usado para montar o portfólio do artesão autenticado (GET /api/trabalhos/meus).
      */
     List<Trabalho> findByArtesao_IdArtesaoOrderByDataPublicacaoDesc(Long idArtesao);
+
+    /** Quantos trabalhos o artesão já publicou (usado na regra de limite de cards). */
+    long countByArtesao_IdArtesao(Long idArtesao);
 }

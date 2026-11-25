@@ -21,6 +21,7 @@ public class ImagemStorageService {
     );
 
     private static final String PASTA_EVENTOS = "associacao-gaia/eventos";
+    private static final String PASTA_TRABALHOS = "associacao-gaia/trabalhos";
 
     private final Cloudinary cloudinary;
 
@@ -29,13 +30,22 @@ public class ImagemStorageService {
     }
 
     public ResultadoUpload upload(MultipartFile arquivo) {
+        return upload(arquivo, PASTA_EVENTOS);
+    }
+
+    /** Envia a foto de um trabalho (card) de artesão para a pasta de trabalhos. */
+    public ResultadoUpload uploadTrabalho(MultipartFile arquivo) {
+        return upload(arquivo, PASTA_TRABALHOS);
+    }
+
+    private ResultadoUpload upload(MultipartFile arquivo, String pasta) {
         validarArquivo(arquivo);
 
         try {
             Map<?, ?> resultado = cloudinary.uploader().upload(
                     arquivo.getBytes(),
                     ObjectUtils.asMap(
-                            "folder", PASTA_EVENTOS,
+                            "folder", pasta,
                             "resource_type", "image"
                     )
             );
@@ -77,13 +87,13 @@ public class ImagemStorageService {
 
     private void validarArquivo(MultipartFile arquivo) {
         if (arquivo == null || arquivo.isEmpty()) {
-            throw new IllegalArgumentException(
+            throw new br.edu.ifsp.associacaogaia.exception.ImagemInvalidaException(
                     "Selecione uma imagem para enviar."
             );
         }
 
         if (!TIPOS_PERMITIDOS.contains(arquivo.getContentType())) {
-            throw new IllegalArgumentException(
+            throw new br.edu.ifsp.associacaogaia.exception.ImagemInvalidaException(
                     "Formato inválido. Envie uma imagem JPG, PNG ou WEBP."
             );
         }
