@@ -2,6 +2,7 @@ package br.edu.ifsp.associacaogaia.dto;
 
 import br.edu.ifsp.associacaogaia.model.Trabalho;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -20,6 +21,8 @@ public class TrabalhoResponseDTO {
     private String legenda;
     private String descricao;
     private String categoria;
+    private BigDecimal preco;
+    private LocalDateTime precoAtualizadoEm;
     private LocalDateTime dataPublicacao;
 
     public TrabalhoResponseDTO(Trabalho trabalho) {
@@ -28,6 +31,8 @@ public class TrabalhoResponseDTO {
         this.legenda = trabalho.getLegenda();
         this.descricao = trabalho.getDescricao();
         this.categoria = trabalho.getCategoria();
+        this.preco = trabalho.getPreco();
+        this.precoAtualizadoEm = trabalho.getPrecoAtualizadoEm();
         this.dataPublicacao = trabalho.getDataPublicacao();
     }
 
@@ -49,6 +54,14 @@ public class TrabalhoResponseDTO {
 
     public String getCategoria() {
         return categoria;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public LocalDateTime getPrecoAtualizadoEm() {
+        return precoAtualizadoEm;
     }
 
     public LocalDateTime getDataPublicacao() {

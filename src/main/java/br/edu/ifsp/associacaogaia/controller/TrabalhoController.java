@@ -1,7 +1,10 @@
 package br.edu.ifsp.associacaogaia.controller;
 
+import br.edu.ifsp.associacaogaia.dto.HistoricoPrecoResponseDTO;
 import br.edu.ifsp.associacaogaia.dto.TrabalhoCadastroDTO;
+import br.edu.ifsp.associacaogaia.dto.TrabalhoPrecoDTO;
 import br.edu.ifsp.associacaogaia.dto.TrabalhoResponseDTO;
+import br.edu.ifsp.associacaogaia.dto.TrabalhoUploadDTO;
 import br.edu.ifsp.associacaogaia.model.Trabalho;
 import br.edu.ifsp.associacaogaia.security.UsuarioDetails;
 import br.edu.ifsp.associacaogaia.service.TrabalhoService;
@@ -24,6 +27,14 @@ import java.util.List;
  *   GET    /api/trabalhos/meus  — lista os trabalhos do artesão autenticado
  *   PUT    /api/trabalhos/{id}  — atualiza um trabalho existente do artesão autenticado
  *   DELETE /api/trabalhos/{id}  — exclui um trabalho existente do artesão autenticado
+ *
+ * Versões com FOTO (multipart/form-data, usadas pela página "Meus trabalhos"):
+ *   POST   /api/trabalhos       — campos: imagem (arquivo), legenda, descricao, categoria, preco
+ *   PUT    /api/trabalhos/{id}  — mesmos campos; "imagem" é opcional (sem ela, mantém a foto)
+ *
+ * Preço:
+ *   PATCH  /api/trabalhos/{id}/preco            — atualiza só o preço ({"preco": 120.00})
+ *   GET    /api/trabalhos/{id}/historico-preco  — lista as mudanças de preço do trabalho
  *
  * Segurança:
  *   Todos os endpoints exigem token JWT válido no header "Authorization: Bearer <token>".
@@ -62,7 +73,7 @@ public class TrabalhoController {
      * @param usuarioDetails principal autenticado injetado pelo Spring Security
      * @return ResponseEntity com o trabalho criado e status 201
      */
-    @PostMapping
+    @PostMapping(consumes = "application/json")
     @PreAuthorize("hasRole('ARTESAO')")
     public ResponseEntity<TrabalhoResponseDTO> cadastrarTrabalho(
             @Valid @RequestBody TrabalhoCadastroDTO dto,
@@ -114,7 +125,7 @@ public class TrabalhoController {
      * @param dto            novos dados do formulário, validados pelo Bean Validation
      * @param usuarioDetails principal autenticado injetado pelo Spring Security
      */
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = "application/json")
     @PreAuthorize("hasRole('ARTESAO')")
     public ResponseEntity<TrabalhoResponseDTO> atualizarTrabalho(
             @PathVariable Long id,
@@ -147,5 +158,72 @@ public class TrabalhoController {
         Long idUsuario = usuarioDetails.getUsuario().getIdUsuario();
         trabalhoService.excluirTrabalho(id, idUsuario);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Cadastra um trabalho enviando a FOTO (multipart/form-data).
+     *
+     * Respostas: 201 (criado), 400 (validação/imagem inválida), 401, 403 (não é artesão),
+     * 404 (sem perfil de artesão), 409 (limite de trabalhos atingido), 413 (arquivo grande).
+     */
+    @PostMapping(consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ARTESAO')")
+    public ResponseEntity<TrabalhoResponseDTO> cadastrarTrabalhoComImagem(
+            @Valid @ModelAttribute TrabalhoUploadDTO dto,
+            @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
+
+        Long idUsuario = usuarioDetails.getUsuario().getIdUsuario();
+        Trabalho salvo = trabalhoService.cadastrarTrabalhoComImagem(dto, idUsuario);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TrabalhoResponseDTO(salvo));
+    }
+
+    /**
+     * Atualiza um trabalho (multipart/form-data). O campo "imagem" é opcional:
+     * se não vier, a foto atual é mantida.
+     */
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ARTESAO')")
+    public ResponseEntity<TrabalhoResponseDTO> atualizarTrabalhoComImagem(
+            @PathVariable Long id,
+            @Valid @ModelAttribute TrabalhoUploadDTO dto,
+            @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
+
+        Long idUsuario = usuarioDetails.getUsuario().getIdUsuario();
+        Trabalho atualizado = trabalhoService.atualizarTrabalhoComImagem(id, dto, idUsuario);
+
+        return ResponseEntity.ok(new TrabalhoResponseDTO(atualizado));
+    }
+
+    /**
+     * Atualiza somente o preço do trabalho e registra a mudança no histórico.
+     * Corpo: {"preco": 120.00} — "preco": null deixa o trabalho "sob consulta".
+     */
+    @PatchMapping("/{id}/preco")
+    @PreAuthorize("hasRole('ARTESAO')")
+    public ResponseEntity<TrabalhoResponseDTO> atualizarPreco(
+            @PathVariable Long id,
+            @Valid @RequestBody TrabalhoPrecoDTO dto,
+            @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
+
+        Long idUsuario = usuarioDetails.getUsuario().getIdUsuario();
+        Trabalho atualizado = trabalhoService.atualizarPreco(id, dto.getPreco(), idUsuario);
+
+        return ResponseEntity.ok(new TrabalhoResponseDTO(atualizado));
+    }
+
+    /** Histórico de mudanças de preço do trabalho (mais recente primeiro). */
+    @GetMapping("/{id}/historico-preco")
+    @PreAuthorize("hasRole('ARTESAO')")
+    public List<HistoricoPrecoResponseDTO> listarHistoricoPreco(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UsuarioDetails usuarioDetails) {
+
+        Long idUsuario = usuarioDetails.getUsuario().getIdUsuario();
+
+        return trabalhoService.listarHistoricoPreco(id, idUsuario)
+                .stream()
+                .map(HistoricoPrecoResponseDTO::new)
+                .toList();
     }
 }

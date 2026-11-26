@@ -2,6 +2,7 @@ package br.edu.ifsp.associacaogaia.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -85,5 +86,29 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public String tratarUsuarioNaoEhVisitante(UsuarioNaoEhVisitanteException exception){
         return exception.getMessage();
+    }
+
+    @ExceptionHandler(LimiteTrabalhosException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String tratarLimiteTrabalhos(LimiteTrabalhosException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(ImagemInvalidaException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String tratarImagemInvalida(ImagemInvalidaException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(InscricaoNaoEncontradaException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String tratarInscricaoNaoEncontrada(InscricaoNaoEncontradaException exception){
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    public String tratarArquivoGrande(MaxUploadSizeExceededException exception){
+        return "A imagem é muito grande. Envie um arquivo de até 5 MB.";
     }
 }

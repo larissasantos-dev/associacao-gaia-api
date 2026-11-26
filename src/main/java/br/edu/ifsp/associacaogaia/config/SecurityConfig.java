@@ -74,6 +74,16 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/eventos/**").hasRole("ADMINISTRADOR")
                         .requestMatchers(HttpMethod.DELETE, "/eventos/**").hasRole("ADMINISTRADOR")
 
+                        // Catálogo público de artesãos e seus trabalhos (cards)
+                        .requestMatchers(HttpMethod.GET, "/api/artesaos/publico", "/api/artesaos/publico/**").permitAll()
+
+                        // Newsletter: inscrição e cancelamento abertos a qualquer visitante
+                        .requestMatchers(HttpMethod.POST, "/api/newsletter/inscricoes", "/api/newsletter/inscricoes/cancelar").permitAll()
+
+                        // Administração (artesãos, moderação de trabalhos, newsletter)
+                        .requestMatchers("/api/admin/artesaos/**", "/api/admin/artesaos",
+                                "/api/admin/trabalhos/**", "/api/admin/newsletter/**").hasRole("ADMINISTRADOR")
+
                         // Administração de solicitações
                         .requestMatchers("/api/admin/solicitacoes-artesao/**").hasRole("ADMINISTRADOR")
 
